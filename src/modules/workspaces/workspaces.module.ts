@@ -8,9 +8,13 @@ import { WorkspaceMemberRepositoryImpl } from './infrastructure/repositories/wor
 import { CreateWorkspaceUseCase } from './application/use-cases/create-workspace/create-workspace.use-case';
 import { InviteTeamMemberUseCase } from './application/use-cases/invite-team-member/invite-team-member.use-case';
 import { AutoCreateWorkspaceUseCase } from './application/use-cases/auto-create-workspace/auto-create-workspace.use-case';
+import { RemoveTeamMemberUseCase } from './application/use-cases/remove-team-member/remove-team-member.use-case';
+import { WorkspaceController } from './infrastructure/controllers/workspace.controller';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [DatabaseModule, UsersModule],
+  imports: [DatabaseModule, UsersModule, AuthModule],
+  controllers: [WorkspaceController],
   providers: [
     {
       provide: WORKSPACE_REPOSITORY,
@@ -23,6 +27,7 @@ import { AutoCreateWorkspaceUseCase } from './application/use-cases/auto-create-
     CreateWorkspaceUseCase,
     InviteTeamMemberUseCase,
     AutoCreateWorkspaceUseCase,
+    RemoveTeamMemberUseCase,
   ],
   exports: [
     WORKSPACE_REPOSITORY,
@@ -30,6 +35,7 @@ import { AutoCreateWorkspaceUseCase } from './application/use-cases/auto-create-
     CreateWorkspaceUseCase,
     InviteTeamMemberUseCase,
     AutoCreateWorkspaceUseCase,
+    RemoveTeamMemberUseCase,
   ],
 })
 export class WorkspacesModule {}

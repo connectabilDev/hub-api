@@ -64,6 +64,14 @@ export class WorkspaceMember {
     return this.role === WorkspaceRole.OWNER;
   }
 
+  canRemoveMembers(): boolean {
+    return [
+      WorkspaceRole.OWNER,
+      WorkspaceRole.CO_PROFESSOR,
+      WorkspaceRole.CO_MENTOR,
+    ].includes(this.role);
+  }
+
   canManageJobs(): boolean {
     return [
       WorkspaceRole.OWNER,

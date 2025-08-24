@@ -36,8 +36,11 @@ export class UnauthorizedWorkspaceAccessError extends WorkspaceError {
 }
 
 export class WorkspaceMemberNotFoundError extends WorkspaceError {
-  constructor(memberId: string) {
-    super(`Workspace member with ID ${memberId} not found`);
+  constructor(memberId: string, workspaceId?: string) {
+    const message = workspaceId
+      ? `Member ${memberId} not found in workspace ${workspaceId}`
+      : `Workspace member with ID ${memberId} not found`;
+    super(message);
     this.name = 'WorkspaceMemberNotFoundError';
   }
 }

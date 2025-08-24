@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Delete,
   Body,
   Param,
   UseGuards,
@@ -143,5 +144,33 @@ export class WorkspaceController {
   })
   listMyWorkspaces(@Request() _req: any): WorkspaceResponseDto[] {
     return [];
+  }
+
+  @Delete(':workspaceId/members/:userId')
+  @UseGuards(WorkspaceOwnerGuard)
+  @ApiOperation({ summary: 'Remove a team member from workspace' })
+  @ApiParam({ name: 'workspaceId', description: 'Workspace ID' })
+  @ApiParam({ name: 'userId', description: 'User ID to remove' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Team member removed successfully',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Only workspace owners can remove members',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Workspace or member not found',
+  })
+  removeTeamMember(
+    @Param('workspaceId') workspaceId: string,
+    @Param('userId') userId: string,
+    @Request() req: any,
+  ): void {
+    // TODO: Implement with RemoveTeamMemberUseCase
+    console.log(
+      `Removing user ${userId} from workspace ${workspaceId} by ${req.user.id}`,
+    );
   }
 }

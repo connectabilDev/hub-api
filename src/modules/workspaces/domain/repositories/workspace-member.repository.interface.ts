@@ -14,7 +14,8 @@ export interface WorkspaceMemberRepositoryInterface {
     id: string,
     member: Partial<WorkspaceMember>,
   ): Promise<WorkspaceMember | null>;
-  delete(id: string): Promise<boolean>;
+  delete(workspaceId: string, userId: string): Promise<boolean>;
+  deleteById(id: string): Promise<boolean>;
   deactivate(id: string): Promise<boolean>;
 }
 

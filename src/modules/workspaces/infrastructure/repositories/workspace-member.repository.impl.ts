@@ -121,7 +121,17 @@ export class WorkspaceMemberRepositoryImpl
     return updatedMember ? this.mapToDomain(updatedMember) : null;
   }
 
-  async delete(id: string): Promise<boolean> {
+  async delete(workspaceId: string, userId: string): Promise<boolean> {
+    const result = await this.db
+      .deleteFrom('workspace_members')
+      .where('workspace_id', '=', workspaceId)
+      .where('user_id', '=', userId)
+      .executeTakeFirst();
+
+    return Number(result.numDeletedRows) > 0;
+  }
+
+  async deleteById(id: string): Promise<boolean> {
     const result = await this.db
       .deleteFrom('workspace_members')
       .where('id', '=', id)
