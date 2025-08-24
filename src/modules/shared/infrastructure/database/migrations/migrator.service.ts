@@ -39,7 +39,7 @@ export class MigratorService {
         database: config.database,
         user: config.username,
         password: config.password,
-        ssl: config.ssl,
+        ssl: false,
       }),
     });
 
@@ -49,20 +49,47 @@ export class MigratorService {
   async migrateToLatest(): Promise<void> {
     this.logger.log('Running migrations...');
 
+    try {
+      this.logger.log('Testing database connection...');
+      await this.db.selectFrom('pg_database').selectAll().execute();
+      this.logger.log('Database connection successful');
+    } catch (dbError) {
+      this.logger.error('Database connection failed:');
+      this.logger.error(dbError);
+      throw dbError;
+    }
+
+    this.logger.log('Calling migrator.migrateToLatest()...');
     const { error, results } = await this.migrator.migrateToLatest();
 
-    results?.forEach((it) => {
+    this.logger.log(
+      `Migration results: ${results ? results.length : 0} results`,
+    );
+
+    results?.forEach((it, index) => {
+      this.logger.log(
+        `Result ${index + 1}: status=${it.status}, migration=${it.migrationName}`,
+      );
       if (it.status === 'Success') {
         this.logger.log(
           `Migration "${it.migrationName}" was executed successfully`,
         );
       } else if (it.status === 'Error') {
         this.logger.error(`Failed to execute migration "${it.migrationName}"`);
+        this.logger.error(`Migration error details: ${JSON.stringify(it)}`);
       }
     });
 
     if (error) {
-      this.logger.error('Failed to migrate');
+      this.logger.error('Migration failed with error:');
+      this.logger.error(`Error type: ${typeof error}`);
+      this.logger.error(`Error constructor: ${error.constructor.name}`);
+      if (error instanceof Error) {
+        this.logger.error(`Error message: ${error.message}`);
+        this.logger.error(`Error stack: ${error.stack}`);
+      } else {
+        this.logger.error(`Error details: ${JSON.stringify(error)}`);
+      }
       throw new Error(
         `Migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );

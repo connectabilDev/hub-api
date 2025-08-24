@@ -50,7 +50,7 @@ export class DatabaseConfigService {
         database: config.database,
         user: config.username,
         password: config.password,
-        ssl: config.ssl,
+        ssl: false,
         max: config.max,
         idleTimeoutMillis: config.idleTimeoutMillis,
         connectionTimeoutMillis: config.connectionTimeoutMillis,
