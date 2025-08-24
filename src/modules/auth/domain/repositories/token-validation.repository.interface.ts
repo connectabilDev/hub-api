@@ -11,6 +11,9 @@ export interface JwtPayload {
   name?: string;
   picture?: string;
   roles?: string[];
+  scope?: string;
+  organizations?: string[];
+  organization_roles?: string[];
   [key: string]: any;
 }
 

@@ -8,49 +8,6 @@ import {
 import { Type } from 'class-transformer';
 import { WebhookEvent } from '../../domain/entities/webhook-event.entity';
 
-export class LogtoWebhookDto {
-  @IsString()
-  @IsNotEmpty()
-  hookId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  event: string;
-
-  @IsString()
-  @IsNotEmpty()
-  createdAt: string;
-
-  @IsString()
-  @IsOptional()
-  sessionId?: string;
-
-  @IsString()
-  @IsOptional()
-  userAgent?: string;
-
-  @IsString()
-  @IsOptional()
-  ip?: string;
-
-  @IsObject()
-  @ValidateNested()
-  @Type(() => WebhookEventDataDto)
-  data: WebhookEventDataDto;
-
-  static fromWebhookEvent(event: WebhookEvent): LogtoWebhookDto {
-    const dto = new LogtoWebhookDto();
-    dto.hookId = event.hookId;
-    dto.event = event.event;
-    dto.createdAt = event.createdAt;
-    dto.sessionId = event.sessionId;
-    dto.userAgent = event.userAgent;
-    dto.ip = event.ip;
-    dto.data = WebhookEventDataDto.fromEventData(event.data);
-    return dto;
-  }
-}
-
 export class WebhookEventDataDto {
   @IsString()
   @IsNotEmpty()
@@ -104,6 +61,49 @@ export class WebhookEventDataDto {
     dto.createdAt = data.createdAt;
     dto.updatedAt = data.updatedAt;
     dto.profile = data.profile;
+    return dto;
+  }
+}
+
+export class LogtoWebhookDto {
+  @IsString()
+  @IsNotEmpty()
+  hookId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  event: string;
+
+  @IsString()
+  @IsNotEmpty()
+  createdAt: string;
+
+  @IsString()
+  @IsOptional()
+  sessionId?: string;
+
+  @IsString()
+  @IsOptional()
+  userAgent?: string;
+
+  @IsString()
+  @IsOptional()
+  ip?: string;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => WebhookEventDataDto)
+  data: WebhookEventDataDto;
+
+  static fromWebhookEvent(event: WebhookEvent): LogtoWebhookDto {
+    const dto = new LogtoWebhookDto();
+    dto.hookId = event.hookId;
+    dto.event = event.event;
+    dto.createdAt = event.createdAt;
+    dto.sessionId = event.sessionId;
+    dto.userAgent = event.userAgent;
+    dto.ip = event.ip;
+    dto.data = WebhookEventDataDto.fromEventData(event.data);
     return dto;
   }
 }

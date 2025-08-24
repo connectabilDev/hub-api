@@ -10,6 +10,7 @@ import {
   InternalServerErrorException,
   Req,
 } from '@nestjs/common';
+import { ApiTags, ApiExcludeEndpoint } from '@nestjs/swagger';
 import { ProcessLogtoUserEventUseCase } from '../../application/use-cases/process-logto-user-event/process-logto-user-event.use-case';
 import { WebhookSignatureValidator } from '../validators/webhook-signature.validator';
 import { LogtoWebhookDto } from '../../application/dtos/logto-webhook.dto';
@@ -19,6 +20,7 @@ import {
   WebhookEventProcessingError,
 } from '../../domain/errors/webhook.errors';
 
+@ApiTags('Webhooks')
 @Controller('api/webhooks/logto')
 export class LogtoWebhookController {
   constructor(
@@ -28,6 +30,7 @@ export class LogtoWebhookController {
 
   @Post('user-created')
   @HttpCode(HttpStatus.OK)
+  @ApiExcludeEndpoint()
   async handleUserWebhook(
     @Req() req: any,
     @Headers('logto-signature-sha-256') signature: string,

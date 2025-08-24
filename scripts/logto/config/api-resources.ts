@@ -4,49 +4,112 @@ export const createApiResourceConfigs = (
   apiResourceIndicator: string,
 ): CreateResourceRequest[] => [
   {
-    name: 'Hub API',
+    name: 'Hub API - Core',
     indicator: apiResourceIndicator,
     accessTokenTtl: 3600,
     scopes: [
+      // Admin scopes
+      { name: 'admin', description: 'Full administrative access' },
+
+      // User management scopes
+      { name: 'users:read', description: 'Read user information' },
+      { name: 'users:write', description: 'Create and update users' },
+      { name: 'users:delete', description: 'Delete users' },
+
+      // Profile management
+      { name: 'profile:read', description: 'Read own profile' },
+      { name: 'profile:write', description: 'Update own profile' },
+
+      // Mentoring module scopes
       {
-        name: 'read',
-        description: 'Read access to API resources',
+        name: 'mentoring:view',
+        description: 'View mentoring sessions and mentors',
+      },
+      { name: 'mentoring:create', description: 'Create mentoring sessions' },
+      {
+        name: 'mentoring:schedule',
+        description: 'Schedule mentoring sessions',
       },
       {
-        name: 'write',
-        description: 'Write access to API resources',
+        name: 'mentoring:manage',
+        description: 'Manage own mentoring sessions',
       },
       {
-        name: 'delete',
-        description: 'Delete access to API resources',
+        name: 'mentoring:review',
+        description: 'Review and rate mentoring sessions',
       },
       {
-        name: 'admin',
-        description: 'Full administrative access',
+        name: 'mentoring:admin',
+        description: 'Full mentoring module administration',
+      },
+
+      // Jobs module scopes
+      { name: 'jobs:view', description: 'View job listings' },
+      { name: 'jobs:create', description: 'Create and publish job listings' },
+      { name: 'jobs:apply', description: 'Apply to job listings' },
+      { name: 'jobs:manage', description: 'Manage own job listings' },
+      { name: 'jobs:review', description: 'Review applications' },
+      { name: 'jobs:admin', description: 'Full job module administration' },
+
+      // Education module scopes
+      {
+        name: 'education:view',
+        description: 'View courses and educational content',
+      },
+      { name: 'education:create', description: 'Create courses and content' },
+      { name: 'education:teach', description: 'Teach and manage courses' },
+      { name: 'education:enroll', description: 'Enroll in courses' },
+      { name: 'education:manage', description: 'Manage own courses' },
+      {
+        name: 'education:grade',
+        description: 'Grade students and assignments',
       },
       {
-        name: 'users:read',
-        description: 'Read user information',
+        name: 'education:admin',
+        description: 'Full education module administration',
+      },
+
+      // Community module scopes
+      {
+        name: 'community:view',
+        description: 'View community posts and discussions',
+      },
+      { name: 'community:post', description: 'Create posts and comments' },
+      { name: 'community:moderate', description: 'Moderate community content' },
+      {
+        name: 'community:manage',
+        description: 'Manage own posts and comments',
+      },
+      { name: 'community:admin', description: 'Full community administration' },
+
+      // Workspace management scopes
+      {
+        name: 'workspace:create',
+        description: 'Create new workspaces',
       },
       {
-        name: 'users:write',
-        description: 'Create and update users',
+        name: 'workspace:manage',
+        description: 'Manage workspace settings and configuration',
       },
       {
-        name: 'users:delete',
-        description: 'Delete users',
+        name: 'workspace:invite',
+        description: 'Invite team members to workspace',
       },
       {
-        name: 'organizations:read',
-        description: 'Read organization information',
+        name: 'workspace:moderate',
+        description: 'Moderate workspace content and discussions',
       },
       {
-        name: 'organizations:write',
-        description: 'Create and update organizations',
+        name: 'workspace:assist',
+        description: 'Assist in workspace management and support',
       },
       {
-        name: 'organizations:admin',
-        description: 'Full organization administration',
+        name: 'workspace:view',
+        description: 'View workspace information',
+      },
+      {
+        name: 'workspace:admin',
+        description: 'Full workspace administration',
       },
     ],
   },
