@@ -1,0 +1,171 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: connectabil-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-connectabil}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-connectabil123}
+      POSTGRES_DB: ${DB_NAME:-connectabil_db}
+      POSTGRES_HOST_AUTH_METHOD: scram-sha-256
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    ports:
+      - '${DB_PORT:-5432}:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-connectabil} -d ${DB_NAME:-connectabil_db}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - connectabil-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: connectabil-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis123}
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', '--auth', '${REDIS_PASSWORD:-redis123}', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - connectabil-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: ${NODE_ENV:-development}
+    container_name: connectabil-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: ${PORT:-3000}
+      DATABASE_URL: postgresql://${DB_USER:-connectabil}:${DB_PASSWORD:-connectabil123}@postgres:5432/${DB_NAME:-connectabil_db}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-connectabil}
+      DB_PASSWORD: ${DB_PASSWORD:-connectabil123}
+      DB_NAME: ${DB_NAME:-connectabil_db}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis123}
+      JWT_SECRET: ${JWT_SECRET:-your-secret-key-change-in-production}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-7d}
+    ports:
+      - '${PORT:-3000}:3000'
+      - '${DEBUG_PORT:-9229}:9229'
+    volumes:
+      - ./src:/app/src
+      - ./test:/app/test
+      - ./.env:/app/.env:ro
+      - node_modules:/app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - connectabil-network
+    command: ${DOCKER_COMMAND:-yarn start:dev}
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: connectabil-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@connectabil.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin123}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - '${PGADMIN_PORT:-5050}:80'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./scripts/pgadmin-servers.json:/pgadmin4/servers.json:ro
+    depends_on:
+      - postgres
+    networks:
+      - connectabil-network
+    profiles:
+      - tools
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: connectabil-redis-commander
+    restart: unless-stopped
+    environment:
+      REDIS_HOSTS: redis:redis:6379:0:${REDIS_PASSWORD:-redis123}
+      HTTP_USER: ${REDIS_COMMANDER_USER:-admin}
+      HTTP_PASSWORD: ${REDIS_COMMANDER_PASSWORD:-admin123}
+    ports:
+      - '${REDIS_COMMANDER_PORT:-8081}:8081'
+    depends_on:
+      - redis
+    networks:
+      - connectabil-network
+    profiles:
+      - tools
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: connectabil-mailhog
+    restart: unless-stopped
+    ports:
+      - '${MAILHOG_SMTP_PORT:-1025}:1025'
+      - '${MAILHOG_WEB_PORT:-8025}:8025'
+    networks:
+      - connectabil-network
+    profiles:
+      - tools
+
+  nginx:
+    image: nginx:alpine
+    container_name: connectabil-nginx
+    restart: unless-stopped
+    ports:
+      - '${NGINX_PORT:-80}:80'
+      - '${NGINX_SSL_PORT:-443}:443'
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - api
+    networks:
+      - connectabil-network
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  node_modules:
+    driver: local
+
+networks:
+  connectabil-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16

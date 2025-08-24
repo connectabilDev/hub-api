@@ -1,0 +1,24 @@
+# Development override configuration
+# This file is automatically loaded by docker-compose in development
+
+version: '3.8'
+
+services:
+  api:
+    build:
+      target: development
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./src:/app/src:delegated
+      - ./test:/app/test:delegated
+      - ./package.json:/app/package.json:ro
+      - ./yarn.lock:/app/yarn.lock:ro
+      - ./tsconfig.json:/app/tsconfig.json:ro
+      - ./tsconfig.build.json:/app/tsconfig.build.json:ro
+      - ./.eslintrc.js:/app/.eslintrc.js:ro
+      - ./.prettierrc:/app/.prettierrc:ro
+      - ./nest-cli.json:/app/nest-cli.json:ro
+    command: yarn start:dev
+    stdin_open: true
+    tty: true

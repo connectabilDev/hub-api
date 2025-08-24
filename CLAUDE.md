@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Commands
 
 ### Build & Run
+
 - `yarn build` - Compile TypeScript to JavaScript
 - `yarn start` - Start the application
 - `yarn start:dev` - Start in development mode with hot reload
@@ -12,6 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `yarn start:prod` - Start production build
 
 ### Testing (TDD Approach)
+
 - `yarn test` - Run unit tests
 - `yarn test:watch` - Run tests in watch mode for TDD workflow
 - `yarn test:cov` - Generate test coverage report
@@ -19,6 +21,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `yarn test:e2e` - Run end-to-end tests
 
 ### Code Quality
+
 - `yarn lint` - Run ESLint and auto-fix issues
 - `yarn format` - Format code with Prettier
 
@@ -115,6 +118,7 @@ src/modules/users/
 3. **Refactor**: Melhore o código mantendo os testes passando
 
 Estrutura de testes:
+
 - Unit tests: `*.spec.ts` ao lado do arquivo testado
 - Integration tests: `test/integration/`
 - E2E tests: `test/e2e/`
@@ -122,6 +126,7 @@ Estrutura de testes:
 ### Dependency Injection
 
 Use o sistema de DI do NestJS com abordagem modular:
+
 - Defina interfaces em `modules/[module-name]/domain/repositories/`
 - Use `@Injectable()` nas implementações em `modules/[module-name]/infrastructure/`
 - Use tokens de injeção para abstrações (ex: `USER_REPOSITORY`)
@@ -156,6 +161,6 @@ Use o sistema de DI do NestJS com abordagem modular:
 - Siga rigorosamente Clean Architecture com estrutura modular
 - Cada módulo deve ser independente e seguir os princípios SOLID
 - Implemente features usando TDD - teste primeiro, código depois
-- Busque informações atualizadas quando necessário
+- Busque informações atualizadas quando necessário no MCP context7
 - Não adicione referências a IA/Claude em commits ou código
 - Organize código em módulos por contexto de negócio (bounded contexts)

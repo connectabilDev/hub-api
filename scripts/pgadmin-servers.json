@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Connectabil PostgreSQL",
+      "Group": "Docker Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "postgres",
+      "Username": "connectabil",
+      "SSLMode": "prefer",
+      "PassFile": "/tmp/pgpassfile"
+    }
+  }
+}
