@@ -20,7 +20,7 @@ export class CreateUserUseCase {
 
     const user = UserEntity.create({
       email: dto.email,
-      name: dto.name,
+      name: dto.name || '',
     });
 
     const savedUser = await this.userRepository.save(user);

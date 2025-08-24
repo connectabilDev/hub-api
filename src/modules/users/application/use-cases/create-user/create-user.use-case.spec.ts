@@ -51,7 +51,7 @@ describe('CreateUserUseCase', () => {
       const mockUser = UserEntity.create({
         id: '123',
         email: createUserDto.email,
-        name: createUserDto.name,
+        name: createUserDto.name || '',
       });
 
       userRepository.existsByEmail.mockResolvedValue(false);

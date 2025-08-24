@@ -26,7 +26,10 @@
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
-    "docker:build": "docker-compose build"
+    "docker:build": "docker-compose build",
+    "logto:setup": "ts-node -r tsconfig-paths/register scripts/logto/setup-logto.ts",
+    "logto:validate": "ts-node -r tsconfig-paths/register scripts/logto/validate-config.ts",
+    "logto:test-webhook": "ts-node -r tsconfig-paths/register scripts/logto/test-webhook.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -36,6 +39,7 @@
     "@nestjs/terminus": "^11.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "jose": "^6.0.13",
     "kysely": "^0.28.5",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
@@ -49,7 +53,7 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
-    "@types/express": "^5.0.0",
+    "@types/express": "^5.0.3",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.7",
     "@types/pg": "^8.15.5",
@@ -84,6 +88,9 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jose)/)"
+    ],
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],

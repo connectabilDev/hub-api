@@ -1,6 +1,10 @@
 export class CreateUserDto {
   email: string;
-  name: string;
+  name?: string;
+  externalId?: string;
+  username?: string;
+  avatar?: string;
+  phone?: string;
 }
 
 export class CreateUserResponseDto {

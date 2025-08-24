@@ -1,0 +1,81 @@
+import {
+  Controller,
+  Post,
+  Body,
+  Headers,
+  HttpCode,
+  HttpStatus,
+  BadRequestException,
+  UnauthorizedException,
+  InternalServerErrorException,
+  Req,
+} from '@nestjs/common';
+import { ProcessLogtoUserEventUseCase } from '../../application/use-cases/process-logto-user-event/process-logto-user-event.use-case';
+import { WebhookSignatureValidator } from '../validators/webhook-signature.validator';
+import { LogtoWebhookDto } from '../../application/dtos/logto-webhook.dto';
+import {
+  WebhookSignatureInvalidError,
+  UnsupportedWebhookEventError,
+  WebhookEventProcessingError,
+} from '../../domain/errors/webhook.errors';
+
+@Controller('api/webhooks/logto')
+export class LogtoWebhookController {
+  constructor(
+    private readonly processLogtoUserEventUseCase: ProcessLogtoUserEventUseCase,
+    private readonly signatureValidator: WebhookSignatureValidator,
+  ) {}
+
+  @Post('user-created')
+  @HttpCode(HttpStatus.OK)
+  async handleUserWebhook(
+    @Req() req: any,
+    @Headers('logto-signature-sha-256') signature: string,
+    @Headers('logto-timestamp') timestamp: string,
+    @Body() webhookData: any,
+  ): Promise<{ success: boolean; message: string }> {
+    try {
+      const rawBody = req.rawBody;
+      if (!rawBody) {
+        throw new BadRequestException('Request body is required');
+      }
+
+      const payload = rawBody.toString('utf8');
+
+      this.signatureValidator.validateSignature(payload, signature, timestamp);
+
+      const webhookEvent = LogtoWebhookDto.fromWebhookEvent(webhookData);
+
+      await this.processLogtoUserEventUseCase.execute(webhookEvent);
+
+      return {
+        success: true,
+        message: 'Webhook processed successfully',
+      };
+    } catch (error) {
+      if (error instanceof WebhookSignatureInvalidError) {
+        throw new UnauthorizedException('Invalid webhook signature');
+      }
+
+      if (error instanceof UnsupportedWebhookEventError) {
+        return {
+          success: true,
+          message: `Unsupported event type: ${error.message}`,
+        };
+      }
+
+      if (error instanceof WebhookEventProcessingError) {
+        throw new InternalServerErrorException(error.message);
+      }
+
+      if (
+        error instanceof BadRequestException ||
+        error instanceof UnauthorizedException
+      ) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException('Failed to process webhook');
+    }
+  }
+}
