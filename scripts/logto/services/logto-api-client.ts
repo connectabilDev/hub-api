@@ -71,6 +71,36 @@ export class LogtoApiClient {
     return this.request<Organization>('POST', '/organizations', org);
   }
 
+  async getApplications(): Promise<any[]> {
+    return this.request<any[]>('GET', '/applications');
+  }
+
+  async createApplication(application: any): Promise<any> {
+    return this.request<any>('POST', '/applications', application);
+  }
+
+  async updateApplication(
+    applicationId: string,
+    updateData: any,
+  ): Promise<any> {
+    return this.request<any>(
+      'PATCH',
+      `/applications/${applicationId}`,
+      updateData,
+    );
+  }
+
+  async assignApplicationResourceScope(
+    applicationId: string,
+    resourceId: string,
+    scopeId: string,
+  ): Promise<void> {
+    await this.request(
+      'PUT',
+      `/applications/${applicationId}/resources/${resourceId}/scopes/${scopeId}`,
+    );
+  }
+
   private async request<T = any>(
     method: string,
     path: string,
