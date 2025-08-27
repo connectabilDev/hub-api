@@ -1,0 +1,11 @@
+{
+  "HELLO": "Olá",
+  "WELCOME": "Bem-vindo ao Hub API",
+  "SUCCESS": "Sucesso",
+  "ERROR": "Ocorreu um erro",
+  "NOT_FOUND": "Recurso não encontrado",
+  "UNAUTHORIZED": "Acesso não autorizado",
+  "FORBIDDEN": "Acesso proibido",
+  "BAD_REQUEST": "Requisição inválida",
+  "INTERNAL_ERROR": "Erro interno do servidor"
+}

@@ -1,0 +1,19 @@
+{
+  "CREATED": "Organização criada com sucesso",
+  "UPDATED": "Organização atualizada com sucesso",
+  "DELETED": "Organização excluída com sucesso",
+  "NOT_FOUND": "Organização não encontrada",
+  "ALREADY_EXISTS": "Organização já existe",
+  "NAME_REQUIRED": "Nome da organização é obrigatório",
+  "INVALID_ID": "ID da organização inválido",
+  "MEMBER_ADDED": "Membro adicionado com sucesso",
+  "MEMBER_REMOVED": "Membro removido com sucesso",
+  "MEMBER_INVITED": "Membro convidado com sucesso",
+  "MEMBER_NOT_FOUND": "Membro não encontrado",
+  "ALREADY_MEMBER": "Usuário já é membro desta organização",
+  "NOT_MEMBER": "Usuário não é membro desta organização",
+  "CANNOT_REMOVE_OWNER": "Não é possível remover o proprietário da organização",
+  "INSUFFICIENT_ROLE": "Permissões de papel insuficientes",
+  "SCHEMA_CREATION_FAILED": "Falha ao criar schema da organização",
+  "SCHEMA_DELETION_FAILED": "Falha ao excluir schema da organização"
+}

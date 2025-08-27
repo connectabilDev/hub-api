@@ -1,0 +1,19 @@
+{
+  "CREATED": "Organization created successfully",
+  "UPDATED": "Organization updated successfully",
+  "DELETED": "Organization deleted successfully",
+  "NOT_FOUND": "Organization not found",
+  "ALREADY_EXISTS": "Organization already exists",
+  "NAME_REQUIRED": "Organization name is required",
+  "INVALID_ID": "Invalid organization ID",
+  "MEMBER_ADDED": "Member added successfully",
+  "MEMBER_REMOVED": "Member removed successfully",
+  "MEMBER_INVITED": "Member invited successfully",
+  "MEMBER_NOT_FOUND": "Member not found",
+  "ALREADY_MEMBER": "User is already a member of this organization",
+  "NOT_MEMBER": "User is not a member of this organization",
+  "CANNOT_REMOVE_OWNER": "Cannot remove organization owner",
+  "INSUFFICIENT_ROLE": "Insufficient role permissions",
+  "SCHEMA_CREATION_FAILED": "Failed to create organization schema",
+  "SCHEMA_DELETION_FAILED": "Failed to delete organization schema"
+}

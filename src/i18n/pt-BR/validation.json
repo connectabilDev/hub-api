@@ -1,0 +1,22 @@
+{
+  "NOT_EMPTY": "{property} não pode estar vazio",
+  "IS_STRING": "{property} deve ser uma string",
+  "IS_NUMBER": "{property} deve ser um número",
+  "IS_BOOLEAN": "{property} deve ser um booleano",
+  "IS_ARRAY": "{property} deve ser um array",
+  "IS_OBJECT": "{property} deve ser um objeto",
+  "IS_EMAIL": "{property} deve ser um email válido",
+  "IS_UUID": "{property} deve ser um UUID válido",
+  "IS_DATE": "{property} deve ser uma data válida",
+  "IS_URL": "{property} deve ser uma URL válida",
+  "MIN_LENGTH": "{property} deve ter pelo menos {constraints.0} caracteres",
+  "MAX_LENGTH": "{property} deve ter no máximo {constraints.0} caracteres",
+  "MIN": "{property} deve ser no mínimo {constraints.0}",
+  "MAX": "{property} deve ser no máximo {constraints.0}",
+  "IS_ENUM": "{property} deve ser um dos valores: {constraints.0}",
+  "MATCHES": "Formato de {property} inválido",
+  "ARRAY_MIN_SIZE": "{property} deve conter pelo menos {constraints.0} itens",
+  "ARRAY_MAX_SIZE": "{property} deve conter no máximo {constraints.0} itens",
+  "IS_POSITIVE": "{property} deve ser um número positivo",
+  "IS_NEGATIVE": "{property} deve ser um número negativo"
+}
