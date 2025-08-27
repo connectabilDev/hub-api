@@ -68,7 +68,9 @@ describe('RemoveMemberUseCase', () => {
     );
 
     beforeEach(() => {
-      mockLogtoClient.organizations.removeUser.mockResolvedValue(undefined);
+      (mockLogtoClient.organizations.removeUser as jest.Mock).mockResolvedValue(
+        undefined,
+      );
     });
 
     it('should remove member successfully', async () => {
@@ -129,7 +131,9 @@ describe('RemoveMemberUseCase', () => {
     it('should throw BadRequestException when removing user fails', async () => {
       const logtoError = new Error('User not found');
       mockRepository.findById.mockResolvedValue(activeOrganization);
-      mockLogtoClient.organizations.removeUser.mockRejectedValue(logtoError);
+      (mockLogtoClient.organizations.removeUser as jest.Mock).mockRejectedValue(
+        logtoError,
+      );
 
       await expect(
         useCase.execute(organizationId, removeMemberDto),
@@ -191,7 +195,9 @@ describe('RemoveMemberUseCase', () => {
       mockRepository.findById.mockResolvedValue(activeOrganization);
 
       const timeoutError = new Error('Request timeout');
-      mockLogtoClient.organizations.removeUser.mockRejectedValue(timeoutError);
+      (mockLogtoClient.organizations.removeUser as jest.Mock).mockRejectedValue(
+        timeoutError,
+      );
 
       await expect(
         useCase.execute(organizationId, removeMemberDto),

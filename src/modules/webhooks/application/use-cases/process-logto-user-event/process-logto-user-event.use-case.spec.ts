@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProcessLogtoUserEventUseCase } from './process-logto-user-event.use-case';
 import { CreateUserUseCase } from '../../../../users/application/use-cases/create-user/create-user.use-case';
+import { CreateProfileUseCase } from '../../../../user-profile/application/use-cases/create-profile/create-profile.use-case';
 import { LogtoWebhookDto } from '../../dtos/logto-webhook.dto';
 import {
   UnsupportedWebhookEventError,
@@ -10,9 +11,14 @@ import {
 describe('ProcessLogtoUserEventUseCase', () => {
   let useCase: ProcessLogtoUserEventUseCase;
   let createUserUseCase: jest.Mocked<CreateUserUseCase>;
+  let createProfileUseCase: jest.Mocked<CreateProfileUseCase>;
 
   beforeEach(async () => {
     const mockCreateUserUseCase = {
+      execute: jest.fn(),
+    };
+
+    const mockCreateProfileUseCase = {
       execute: jest.fn(),
     };
 
@@ -23,6 +29,10 @@ describe('ProcessLogtoUserEventUseCase', () => {
           provide: CreateUserUseCase,
           useValue: mockCreateUserUseCase,
         },
+        {
+          provide: CreateProfileUseCase,
+          useValue: mockCreateProfileUseCase,
+        },
       ],
     }).compile();
 
@@ -30,6 +40,7 @@ describe('ProcessLogtoUserEventUseCase', () => {
       ProcessLogtoUserEventUseCase,
     );
     createUserUseCase = module.get(CreateUserUseCase);
+    createProfileUseCase = module.get(CreateProfileUseCase);
   });
 
   describe('execute', () => {
@@ -58,6 +69,11 @@ describe('ProcessLogtoUserEventUseCase', () => {
         avatar: undefined,
         phone: undefined,
       });
+
+      expect(createProfileUseCase.execute).toHaveBeenCalledWith({
+        logtoUserId: 'user-123',
+        fullName: 'Test User',
+      });
     });
 
     it('should handle User.Data.Updated event', async () => {
@@ -85,6 +101,8 @@ describe('ProcessLogtoUserEventUseCase', () => {
         avatar: undefined,
         phone: undefined,
       });
+
+      expect(createProfileUseCase.execute).not.toHaveBeenCalled();
     });
 
     it('should throw UnsupportedWebhookEventError for unknown events', async () => {
@@ -149,6 +167,11 @@ describe('ProcessLogtoUserEventUseCase', () => {
         username: undefined,
         avatar: undefined,
         phone: undefined,
+      });
+
+      expect(createProfileUseCase.execute).toHaveBeenCalledWith({
+        logtoUserId: 'user-123',
+        fullName: 'John Doe',
       });
     });
   });

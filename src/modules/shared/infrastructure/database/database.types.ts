@@ -2,6 +2,7 @@ import { Generated, Insertable, Selectable, Updateable } from 'kysely';
 
 export interface DatabaseSchema {
   users: UserTable;
+  user_profiles: UserProfileTable;
   products: ProductTable;
   posts: PostTable;
   post_likes: PostLikeTable;
@@ -167,5 +168,32 @@ export interface OrganizationSchemaTable {
 export type OrganizationSchema = Selectable<OrganizationSchemaTable>;
 export type NewOrganizationSchema = Insertable<OrganizationSchemaTable>;
 export type OrganizationSchemaUpdate = Updateable<OrganizationSchemaTable>;
+
+export interface UserProfileTable {
+  id: Generated<string>;
+  logto_user_id: string;
+  full_name: string;
+  cpf?: string;
+  rg?: string;
+  birth_date?: Date;
+  gender?: 'male' | 'female' | 'other' | 'prefer_not_to_say';
+  phone?: string;
+  whatsapp?: string;
+  bio?: string;
+  headline?: string;
+  address?: any;
+  crc_number?: string;
+  specializations?: string[];
+  years_experience?: number;
+  profile_completed: Generated<boolean>;
+  onboarding_step: Generated<string>;
+  verification_status: Generated<string>;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
+}
+
+export type UserProfile = Selectable<UserProfileTable>;
+export type NewUserProfile = Insertable<UserProfileTable>;
+export type UserProfileUpdate = Updateable<UserProfileTable>;
 
 export type Database = DatabaseSchema;

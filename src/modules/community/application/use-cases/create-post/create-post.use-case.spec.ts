@@ -54,8 +54,8 @@ describe('CreatePostUseCase', () => {
     };
 
     const mockMapper = {
-      toDto: jest.fn(),
-      toDtoList: jest.fn(),
+      toDto: jest.fn().mockReturnValue({}),
+      toDtoList: jest.fn().mockReturnValue([]),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -113,7 +113,7 @@ describe('CreatePostUseCase', () => {
       };
 
       postRepository.save.mockResolvedValue(mockPost);
-      postMapper.toDto.mockReturnValue(expectedPostDto as any);
+      (postMapper.toDto as jest.Mock).mockReturnValue(expectedPostDto as any);
 
       const result = await useCase.execute(createPostDto);
 
@@ -144,7 +144,7 @@ describe('CreatePostUseCase', () => {
       };
 
       postRepository.save.mockResolvedValue(mockPost);
-      postMapper.toDto.mockReturnValue(expectedPostDto as any);
+      (postMapper.toDto as jest.Mock).mockReturnValue(expectedPostDto as any);
 
       const result = await useCase.execute(createPostDto);
 
@@ -172,7 +172,7 @@ describe('CreatePostUseCase', () => {
       });
 
       postRepository.save.mockResolvedValue(mockPost);
-      postMapper.toDto.mockReturnValue({} as any);
+      (postMapper.toDto as jest.Mock).mockReturnValue({} as any);
 
       await useCase.execute(createPostDto);
 
@@ -200,7 +200,7 @@ describe('CreatePostUseCase', () => {
       });
 
       postRepository.save.mockResolvedValue(mockPost);
-      postMapper.toDto.mockReturnValue({} as any);
+      (postMapper.toDto as jest.Mock).mockReturnValue({} as any);
 
       await useCase.execute(createPostDto);
 

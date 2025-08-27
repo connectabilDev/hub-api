@@ -35,8 +35,10 @@ describe('FeedController', () => {
     commentsCount: 0,
     sharesCount: 0,
     isLiked: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    canEdit: true,
+    canDelete: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 
   beforeEach(async () => {
@@ -118,6 +120,11 @@ describe('FeedController', () => {
       const mockFeedResult = {
         data: [mockPostDto],
         total: 1,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+        hasNext: false,
+        hasPrevious: false,
       };
 
       getFeedPostsUseCase.execute.mockResolvedValue(mockFeedResult);
@@ -146,6 +153,11 @@ describe('FeedController', () => {
       const mockFeedResult = {
         data: [mockPostDto],
         total: 1,
+        page: 1,
+        limit: 50,
+        totalPages: 1,
+        hasNext: false,
+        hasPrevious: false,
       };
 
       getFeedPostsUseCase.execute.mockResolvedValue(mockFeedResult);
@@ -163,6 +175,11 @@ describe('FeedController', () => {
       const mockFeedResult = {
         data: [mockPostDto],
         total: 1,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+        hasNext: false,
+        hasPrevious: false,
       };
 
       getFeedPostsUseCase.execute.mockResolvedValue(mockFeedResult);
@@ -183,6 +200,11 @@ describe('FeedController', () => {
       const mockFeedResult = {
         data: [mockPostDto],
         total: 1,
+        page: 1,
+        limit: 1,
+        totalPages: 1,
+        hasNext: false,
+        hasPrevious: false,
       };
 
       getFeedPostsUseCase.execute.mockResolvedValue(mockFeedResult);
@@ -205,6 +227,11 @@ describe('FeedController', () => {
       const mockFeedResult = {
         data: [],
         total: 0,
+        page: 1,
+        limit: 1,
+        totalPages: 0,
+        hasNext: false,
+        hasPrevious: false,
       };
 
       getFeedPostsUseCase.execute.mockResolvedValue(mockFeedResult);
@@ -219,6 +246,7 @@ describe('FeedController', () => {
     it('should toggle like successfully', async () => {
       const postId = 'post-123';
       const mockLikeResult = {
+        postId: 'post-123',
         isLiked: true,
         likesCount: 1,
       };
@@ -246,6 +274,11 @@ describe('FeedController', () => {
       const mockFeedResult = {
         data: [],
         total: 0,
+        page: 1,
+        limit: 1,
+        totalPages: 0,
+        hasNext: false,
+        hasPrevious: false,
       };
 
       getFeedPostsUseCase.execute.mockResolvedValue(mockFeedResult);
@@ -264,6 +297,11 @@ describe('FeedController', () => {
       const mockFeedResult = {
         data: [otherUserPost],
         total: 1,
+        page: 1,
+        limit: 1,
+        totalPages: 1,
+        hasNext: false,
+        hasPrevious: false,
       };
 
       getFeedPostsUseCase.execute.mockResolvedValue(mockFeedResult);
@@ -278,6 +316,11 @@ describe('FeedController', () => {
       const mockFeedResult = {
         data: [mockPostDto],
         total: 1,
+        page: 1,
+        limit: 1,
+        totalPages: 1,
+        hasNext: false,
+        hasPrevious: false,
       };
 
       getFeedPostsUseCase.execute.mockResolvedValue(mockFeedResult);

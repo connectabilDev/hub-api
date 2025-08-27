@@ -83,9 +83,9 @@ describe('InviteMemberUseCase', () => {
     };
 
     beforeEach(() => {
-      mockLogtoClient.organizations.createInvitation.mockResolvedValue(
-        mockInvitationResponse,
-      );
+      (
+        mockLogtoClient.organizations.createInvitation as jest.Mock
+      ).mockResolvedValue(mockInvitationResponse);
     });
 
     it('should create invitation with roles and message successfully', async () => {
@@ -216,9 +216,9 @@ describe('InviteMemberUseCase', () => {
     it('should throw BadRequestException when invitation creation fails', async () => {
       const logtoError = new Error('Invalid email address');
       mockRepository.findById.mockResolvedValue(activeOrganization);
-      mockLogtoClient.organizations.createInvitation.mockRejectedValue(
-        logtoError,
-      );
+      (
+        mockLogtoClient.organizations.createInvitation as jest.Mock
+      ).mockRejectedValue(logtoError);
 
       await expect(
         useCase.execute(organizationId, inviteMemberDto),
@@ -326,9 +326,9 @@ describe('InviteMemberUseCase', () => {
       };
 
       mockRepository.findById.mockResolvedValue(activeOrganization);
-      mockLogtoClient.organizations.createInvitation.mockResolvedValue(
-        responseWithoutRoles,
-      );
+      (
+        mockLogtoClient.organizations.createInvitation as jest.Mock
+      ).mockResolvedValue(responseWithoutRoles);
 
       const result = await useCase.execute(organizationId, inviteMemberDto);
 

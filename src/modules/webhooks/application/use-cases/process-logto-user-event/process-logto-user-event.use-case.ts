@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { LogtoWebhookDto } from '../../dtos/logto-webhook.dto';
 import { CreateUserUseCase } from '../../../../users/application/use-cases/create-user/create-user.use-case';
 import { CreateUserDto } from '../../../../users/application/use-cases/create-user/create-user.dto';
+import { CreateProfileUseCase } from '../../../../user-profile/application/use-cases/create-profile/create-profile.use-case';
 import {
   UnsupportedWebhookEventError,
   WebhookEventProcessingError,
@@ -9,7 +10,10 @@ import {
 
 @Injectable()
 export class ProcessLogtoUserEventUseCase {
-  constructor(private readonly createUserUseCase: CreateUserUseCase) {}
+  constructor(
+    private readonly createUserUseCase: CreateUserUseCase,
+    private readonly createProfileUseCase: CreateProfileUseCase,
+  ) {}
 
   async execute(webhookEvent: LogtoWebhookDto): Promise<void> {
     try {
@@ -54,6 +58,11 @@ export class ProcessLogtoUserEventUseCase {
     };
 
     await this.createUserUseCase.execute(createUserDto);
+
+    await this.createProfileUseCase.execute({
+      logtoUserId: userData.id,
+      fullName: createUserDto.name || 'User',
+    });
   }
 
   private async handleUserUpdated(

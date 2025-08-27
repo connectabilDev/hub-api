@@ -6,6 +6,7 @@ import { DatabaseConfigService } from '../modules/shared/infrastructure/database
 import { CreateUsersTableMigration } from '../modules/shared/infrastructure/database/migrations/001-create-users-table.migration';
 import { CreateProductsTableMigration } from '../modules/shared/infrastructure/database/migrations/002-create-products-table.migration';
 import { CreateCommunityTablesMigration } from '../modules/shared/infrastructure/database/migrations/005-create-community-tables.migration';
+import { CreateUserProfilesTableMigration } from '../modules/shared/infrastructure/database/migrations/006-create-user-profiles-table.migration';
 
 export class MigrationRunner {
   private readonly logger = new Logger(MigrationRunner.name);
@@ -42,6 +43,10 @@ export class MigrationRunner {
         {
           name: '005-create-community-tables',
           migration: CreateCommunityTablesMigration,
+        },
+        {
+          name: '006-create-user-profiles-table',
+          migration: CreateUserProfilesTableMigration,
         },
       ];
 

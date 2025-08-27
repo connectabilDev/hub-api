@@ -6,6 +6,7 @@ import { GetOrganizationUseCase } from '../../application/use-cases/get-organiza
 import { AddMemberUseCase } from '../../application/use-cases/add-member/add-member.use-case';
 import { RemoveMemberUseCase } from '../../application/use-cases/remove-member/remove-member.use-case';
 import { ListOrganizationsUseCase } from '../../application/use-cases/list-organizations/list-organizations.use-case';
+import { ListOrganizationsResponseDto } from '../../application/dtos/list-organizations.dto';
 import { UpdateOrganizationUseCase } from '../../application/use-cases/update-organization/update-organization.use-case';
 import { InviteMemberUseCase } from '../../application/use-cases/invite-member/invite-member.use-case';
 import { ListMembersUseCase } from '../../application/use-cases/list-members/list-members.use-case';
@@ -458,11 +459,15 @@ describe('OrganizationController', () => {
 
   describe('listOrganizations', () => {
     it('should list organizations successfully', async () => {
-      const mockResult = {
+      const mockResult: ListOrganizationsResponseDto = {
         organizations: [],
-        total: 0,
-        page: 1,
-        pageSize: 10,
+        pagination: {
+          total: 0,
+          page: 1,
+          pageSize: 10,
+          hasNext: false,
+          hasPrevious: false,
+        },
       };
       mockListOrganizationsUseCase.execute.mockResolvedValue(mockResult);
 
@@ -479,11 +484,15 @@ describe('OrganizationController', () => {
     });
 
     it('should list organizations with parameters', async () => {
-      const mockResult = {
+      const mockResult: ListOrganizationsResponseDto = {
         organizations: [],
-        total: 0,
-        page: 2,
-        pageSize: 20,
+        pagination: {
+          total: 0,
+          page: 2,
+          pageSize: 20,
+          hasNext: false,
+          hasPrevious: true,
+        },
       };
       mockListOrganizationsUseCase.execute.mockResolvedValue(mockResult);
 

@@ -4,7 +4,7 @@ import { PostRepositoryImpl } from './post.repository.impl';
 import { PostMapper } from '../../application/mappers/post.mapper';
 import { DATABASE_CONNECTION } from '../../../shared/infrastructure/database/database.module';
 import { Database } from '../../../shared/infrastructure/database/database.types';
-import { Post } from '../../domain/entities/post.entity';
+import { Post, PostVisibility } from '../../domain/entities/post.entity';
 
 describe('PostRepository Multi-Tenant Isolation', () => {
   let repository: PostRepositoryImpl;
@@ -66,7 +66,7 @@ describe('PostRepository Multi-Tenant Isolation', () => {
       const post = Post.create({
         userId: 'user1',
         content: 'Test post',
-        visibility: 'public',
+        visibility: PostVisibility.PUBLIC,
         media: [],
         tags: [],
       });
@@ -178,7 +178,7 @@ describe('PostRepository Multi-Tenant Isolation', () => {
       const post = Post.create({
         userId: 'user1',
         content: 'Test post',
-        visibility: 'public',
+        visibility: PostVisibility.PUBLIC,
         media: [],
         tags: [],
       });
@@ -216,7 +216,7 @@ describe('PostRepository Multi-Tenant Isolation', () => {
       const post = Post.create({
         userId: 'user1',
         content: 'Test post',
-        visibility: 'public',
+        visibility: PostVisibility.PUBLIC,
         media: [],
         tags: [],
       });

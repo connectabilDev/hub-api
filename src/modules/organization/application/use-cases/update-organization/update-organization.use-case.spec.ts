@@ -64,7 +64,7 @@ describe('UpdateOrganizationUseCase', () => {
     );
 
     beforeEach(() => {
-      mockLogtoClient.organizations.update.mockResolvedValue({
+      (mockLogtoClient.organizations.update as jest.Mock).mockResolvedValue({
         id: organizationId,
         name: 'Updated Name',
         description: 'Updated Description',
@@ -183,7 +183,9 @@ describe('UpdateOrganizationUseCase', () => {
       const updateDto: UpdateOrganizationDto = { name: 'Updated Name' };
 
       mockRepository.findById.mockResolvedValue(activeOrganization);
-      mockLogtoClient.organizations.update.mockRejectedValue(logtoError);
+      (mockLogtoClient.organizations.update as jest.Mock).mockRejectedValue(
+        logtoError,
+      );
 
       await expect(useCase.execute(organizationId, updateDto)).rejects.toThrow(
         new BadRequestException(

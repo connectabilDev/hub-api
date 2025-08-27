@@ -7,6 +7,7 @@ import {
 import { Request } from 'express';
 import { OrganizationMemberGuard } from './organization-member.guard';
 import { LogtoManagementClient } from '../../../shared/infrastructure/clients/logto-management.client';
+import { User } from '../../../auth/domain/entities/user.entity';
 
 describe('OrganizationMemberGuard', () => {
   let guard: OrganizationMemberGuard;
@@ -14,10 +15,30 @@ describe('OrganizationMemberGuard', () => {
   let mockContext: jest.Mocked<ExecutionContext>;
   let mockRequest: Partial<Request>;
 
+  const createMockUser = (overrides: Partial<User> = {}): User => {
+    return new User({
+      id: overrides.id || 'user-123',
+      email: overrides.email || 'test@example.com',
+      name: overrides.name || 'Test User',
+      sub: overrides.sub || 'user-123',
+      iat: overrides.iat || Math.floor(Date.now() / 1000),
+      exp: overrides.exp || Math.floor(Date.now() / 1000) + 3600,
+      aud: overrides.aud || 'test-audience',
+      iss: overrides.iss || 'test-issuer',
+      roles: overrides.roles || [],
+      scopes: overrides.scopes || [],
+      organizations: overrides.organizations || [],
+      organizationRoles: overrides.organizationRoles || [],
+      ...overrides,
+    });
+  };
+
   beforeEach(async () => {
+    const mockGetUserOrganizations = jest.fn();
+
     mockLogtoClient = {
       organizations: {
-        getUserOrganizations: jest.fn(),
+        getUserOrganizations: mockGetUserOrganizations,
         create: jest.fn(),
         delete: jest.fn(),
         addUsers: jest.fn(),
@@ -58,13 +79,13 @@ describe('OrganizationMemberGuard', () => {
     ];
 
     beforeEach(() => {
-      mockLogtoClient.organizations.getUserOrganizations.mockResolvedValue(
-        mockUserOrganizations,
-      );
+      (
+        mockLogtoClient.organizations.getUserOrganizations as jest.Mock
+      ).mockResolvedValue(mockUserOrganizations);
     });
 
     it('should allow access when user is member of organization (from user.sub)', async () => {
-      mockRequest.user = { sub: 'user-123' };
+      mockRequest.user = createMockUser({ sub: 'user-123' });
       mockRequest.params = { organizationId: 'org-123' };
 
       const result = await guard.canActivate(mockContext);
@@ -76,7 +97,7 @@ describe('OrganizationMemberGuard', () => {
     });
 
     it('should allow access when user is member of organization (from user.id)', async () => {
-      mockRequest.user = { id: 'user-456' };
+      mockRequest.user = createMockUser({ id: 'user-456' });
       mockRequest.params = { organizationId: 'org-456' };
 
       const result = await guard.canActivate(mockContext);
@@ -88,7 +109,7 @@ describe('OrganizationMemberGuard', () => {
     });
 
     it('should allow access when organization id from header', async () => {
-      mockRequest.user = { sub: 'user-123' };
+      mockRequest.user = createMockUser({ sub: 'user-123' });
       mockRequest.headers = { 'x-organization-id': 'org-123' };
 
       const result = await guard.canActivate(mockContext);
@@ -97,7 +118,7 @@ describe('OrganizationMemberGuard', () => {
     });
 
     it('should allow access when organization id from request.organization', async () => {
-      mockRequest.user = { sub: 'user-123' };
+      mockRequest.user = createMockUser({ sub: 'user-123' });
       (mockRequest as any).organization = { organizationId: 'org-123' };
 
       const result = await guard.canActivate(mockContext);
@@ -119,7 +140,7 @@ describe('OrganizationMemberGuard', () => {
     });
 
     it('should throw UnauthorizedException when organization ID not found', async () => {
-      mockRequest.user = { sub: 'user-123' };
+      mockRequest.user = createMockUser({ sub: 'user-123' });
       mockRequest.params = {};
       mockRequest.headers = {};
 
@@ -133,7 +154,7 @@ describe('OrganizationMemberGuard', () => {
     });
 
     it('should throw ForbiddenException when user is not member of organization', async () => {
-      mockRequest.user = { sub: 'user-123' };
+      mockRequest.user = createMockUser({ sub: 'user-123' });
       mockRequest.params = { organizationId: 'org-999' }; // Not in user's organizations
 
       await expect(guard.canActivate(mockContext)).rejects.toThrow(
@@ -148,13 +169,13 @@ describe('OrganizationMemberGuard', () => {
     });
 
     it('should throw UnauthorizedException when Logto client fails', async () => {
-      mockRequest.user = { sub: 'user-123' };
+      mockRequest.user = createMockUser({ sub: 'user-123' });
       mockRequest.params = { organizationId: 'org-123' };
 
       const logtoError = new Error('Logto API error');
-      mockLogtoClient.organizations.getUserOrganizations.mockRejectedValue(
-        logtoError,
-      );
+      (
+        mockLogtoClient.organizations.getUserOrganizations as jest.Mock
+      ).mockRejectedValue(logtoError);
 
       await expect(guard.canActivate(mockContext)).rejects.toThrow(
         new UnauthorizedException('Failed to verify organization membership'),
@@ -162,15 +183,15 @@ describe('OrganizationMemberGuard', () => {
     });
 
     it('should propagate ForbiddenException from Logto client', async () => {
-      mockRequest.user = { sub: 'user-123' };
+      mockRequest.user = createMockUser({ sub: 'user-123' });
       mockRequest.params = { organizationId: 'org-123' };
 
       const forbiddenError = new ForbiddenException(
         'Access denied by external service',
       );
-      mockLogtoClient.organizations.getUserOrganizations.mockRejectedValue(
-        forbiddenError,
-      );
+      (
+        mockLogtoClient.organizations.getUserOrganizations as jest.Mock
+      ).mockRejectedValue(forbiddenError);
 
       await expect(guard.canActivate(mockContext)).rejects.toThrow(
         forbiddenError,
@@ -178,9 +199,11 @@ describe('OrganizationMemberGuard', () => {
     });
 
     it('should handle empty user organizations list', async () => {
-      mockRequest.user = { sub: 'user-123' };
+      mockRequest.user = createMockUser({ sub: 'user-123' });
       mockRequest.params = { organizationId: 'org-123' };
-      mockLogtoClient.organizations.getUserOrganizations.mockResolvedValue([]);
+      (
+        mockLogtoClient.organizations.getUserOrganizations as jest.Mock
+      ).mockResolvedValue([]);
 
       await expect(guard.canActivate(mockContext)).rejects.toThrow(
         new ForbiddenException(
@@ -198,11 +221,11 @@ describe('OrganizationMemberGuard', () => {
         { id: 'org-005', name: 'Org 5' },
       ];
 
-      mockRequest.user = { sub: 'user-123' };
+      mockRequest.user = createMockUser({ sub: 'user-123' });
       mockRequest.params = { organizationId: 'org-456' };
-      mockLogtoClient.organizations.getUserOrganizations.mockResolvedValue(
-        manyOrganizations,
-      );
+      (
+        mockLogtoClient.organizations.getUserOrganizations as jest.Mock
+      ).mockResolvedValue(manyOrganizations);
 
       const result = await guard.canActivate(mockContext);
 
@@ -212,7 +235,7 @@ describe('OrganizationMemberGuard', () => {
 
   describe('extractUserId', () => {
     it('should extract user ID from user.sub', () => {
-      mockRequest.user = { sub: 'user-from-sub' };
+      mockRequest.user = createMockUser({ sub: 'user-from-sub' });
 
       const userId = (guard as any).extractUserId(mockRequest);
 
@@ -220,7 +243,7 @@ describe('OrganizationMemberGuard', () => {
     });
 
     it('should extract user ID from user.id when sub is not available', () => {
-      mockRequest.user = { id: 'user-from-id' };
+      mockRequest.user = createMockUser({ id: 'user-from-id' });
 
       const userId = (guard as any).extractUserId(mockRequest);
 
@@ -228,7 +251,10 @@ describe('OrganizationMemberGuard', () => {
     });
 
     it('should prefer user.sub over user.id', () => {
-      mockRequest.user = { sub: 'user-from-sub', id: 'user-from-id' };
+      mockRequest.user = createMockUser({
+        sub: 'user-from-sub',
+        id: 'user-from-id',
+      });
 
       const userId = (guard as any).extractUserId(mockRequest);
 
@@ -244,7 +270,10 @@ describe('OrganizationMemberGuard', () => {
     });
 
     it('should return null when user has no sub or id', () => {
-      mockRequest.user = { name: 'John Doe', email: 'john@example.com' };
+      mockRequest.user = createMockUser({
+        name: 'John Doe',
+        email: 'john@example.com',
+      });
 
       const userId = (guard as any).extractUserId(mockRequest);
 
@@ -321,11 +350,13 @@ describe('OrganizationMemberGuard', () => {
 
   describe('integration scenarios', () => {
     it('should handle complete successful authentication flow', async () => {
-      mockRequest.user = { sub: 'user-123', name: 'Test User' };
+      mockRequest.user = createMockUser({ sub: 'user-123', name: 'Test User' });
       mockRequest.params = { organizationId: 'org-123' };
       mockRequest.headers = { 'x-organization-id': 'org-456' }; // Should be ignored in favor of params
 
-      mockLogtoClient.organizations.getUserOrganizations.mockResolvedValue([
+      (
+        mockLogtoClient.organizations.getUserOrganizations as jest.Mock
+      ).mockResolvedValue([
         { id: 'org-123', name: 'Test Organization' },
         { id: 'org-789', name: 'Other Organization' },
       ]);
@@ -339,12 +370,12 @@ describe('OrganizationMemberGuard', () => {
     });
 
     it('should handle authentication with header-based organization ID', async () => {
-      mockRequest.user = { id: 'user-456' };
+      mockRequest.user = createMockUser({ id: 'user-456' });
       mockRequest.headers = { 'x-organization-id': 'org-456' };
 
-      mockLogtoClient.organizations.getUserOrganizations.mockResolvedValue([
-        { id: 'org-456', name: 'Header Organization' },
-      ]);
+      (
+        mockLogtoClient.organizations.getUserOrganizations as jest.Mock
+      ).mockResolvedValue([{ id: 'org-456', name: 'Header Organization' }]);
 
       const result = await guard.canActivate(mockContext);
 
@@ -355,15 +386,15 @@ describe('OrganizationMemberGuard', () => {
     });
 
     it('should handle complex error scenarios gracefully', async () => {
-      mockRequest.user = { sub: 'user-123' };
+      mockRequest.user = createMockUser({ sub: 'user-123' });
       mockRequest.params = { organizationId: 'org-123' };
 
       // Simulate network timeout
       const timeoutError = new Error('Request timeout');
       timeoutError.name = 'TimeoutError';
-      mockLogtoClient.organizations.getUserOrganizations.mockRejectedValue(
-        timeoutError,
-      );
+      (
+        mockLogtoClient.organizations.getUserOrganizations as jest.Mock
+      ).mockRejectedValue(timeoutError);
 
       await expect(guard.canActivate(mockContext)).rejects.toThrow(
         new UnauthorizedException('Failed to verify organization membership'),
@@ -379,12 +410,12 @@ describe('OrganizationMemberGuard', () => {
       ];
 
       for (const userId of userIdFormats) {
-        mockRequest.user = { sub: userId };
+        mockRequest.user = createMockUser({ sub: userId });
         mockRequest.params = { organizationId: 'org-123' };
 
-        mockLogtoClient.organizations.getUserOrganizations.mockResolvedValue([
-          { id: 'org-123', name: 'Test Organization' },
-        ]);
+        (
+          mockLogtoClient.organizations.getUserOrganizations as jest.Mock
+        ).mockResolvedValue([{ id: 'org-123', name: 'Test Organization' }]);
 
         const result = await guard.canActivate(mockContext);
 

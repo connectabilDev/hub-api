@@ -86,7 +86,9 @@ describe('ListMembersUseCase', () => {
     ];
 
     beforeEach(() => {
-      mockLogtoClient.organizations.getUsers.mockResolvedValue(mockUsers);
+      (mockLogtoClient.organizations.getUsers as jest.Mock).mockResolvedValue(
+        mockUsers,
+      );
     });
 
     it('should list members with default pagination', async () => {
@@ -161,7 +163,9 @@ describe('ListMembersUseCase', () => {
       const dto: ListMembersDto = {};
 
       mockRepository.findById.mockResolvedValue(activeOrganization);
-      mockLogtoClient.organizations.getUsers.mockRejectedValue(logtoError);
+      (mockLogtoClient.organizations.getUsers as jest.Mock).mockRejectedValue(
+        logtoError,
+      );
 
       await expect(useCase.execute(organizationId, dto)).rejects.toThrow(
         new BadRequestException(
@@ -212,7 +216,9 @@ describe('ListMembersUseCase', () => {
     it('should handle empty member list', async () => {
       const dto: ListMembersDto = {};
       mockRepository.findById.mockResolvedValue(activeOrganization);
-      mockLogtoClient.organizations.getUsers.mockResolvedValue([]);
+      (mockLogtoClient.organizations.getUsers as jest.Mock).mockResolvedValue(
+        [],
+      );
 
       const result = await useCase.execute(organizationId, dto);
 
@@ -247,7 +253,7 @@ describe('ListMembersUseCase', () => {
       }));
 
       mockRepository.findById.mockResolvedValue(activeOrganization);
-      mockLogtoClient.organizations.getUsers.mockResolvedValue(
+      (mockLogtoClient.organizations.getUsers as jest.Mock).mockResolvedValue(
         largeUserSet.slice(4, 6),
       );
 
@@ -269,7 +275,9 @@ describe('ListMembersUseCase', () => {
       ];
 
       mockRepository.findById.mockResolvedValue(activeOrganization);
-      mockLogtoClient.organizations.getUsers.mockResolvedValue(minimalUsers);
+      (mockLogtoClient.organizations.getUsers as jest.Mock).mockResolvedValue(
+        minimalUsers,
+      );
 
       const result = await useCase.execute(organizationId, {});
 

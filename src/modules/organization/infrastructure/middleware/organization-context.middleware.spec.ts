@@ -31,7 +31,9 @@ describe('OrganizationContextMiddleware', () => {
 
     mockSchemaManager = {
       provisionSchema: jest.fn(),
-      getDbForSchema: jest.fn(),
+      getDbForSchema: jest.fn() as jest.MockedFunction<
+        (schemaName: string) => any
+      >,
     } as any;
 
     mockRequest = {
@@ -74,7 +76,7 @@ describe('OrganizationContextMiddleware', () => {
       new Date('2023-01-02'),
     );
 
-    const mockOrganizationDb = {
+    const mockOrganizationDb: any = {
       selectFrom: jest.fn(),
       insertInto: jest.fn(),
       updateTable: jest.fn(),
@@ -83,7 +85,7 @@ describe('OrganizationContextMiddleware', () => {
 
     beforeEach(() => {
       mockRepository.findById.mockResolvedValue(activeOrganization);
-      mockSchemaManager.getDbForSchema.mockResolvedValue(mockOrganizationDb);
+      mockSchemaManager.getDbForSchema.mockReturnValue(mockOrganizationDb);
     });
 
     it('should set organization context when organization ID in header', async () => {
@@ -276,7 +278,9 @@ describe('OrganizationContextMiddleware', () => {
     it('should handle schema manager errors', async () => {
       const schemaError = new Error('Schema not found');
       mockRequest.headers = { 'x-organization-id': 'test-org-123' };
-      mockSchemaManager.getDbForSchema.mockRejectedValue(schemaError);
+      mockSchemaManager.getDbForSchema.mockImplementation(() => {
+        throw schemaError;
+      });
 
       await middleware.use(
         mockRequest as Request,
@@ -441,7 +445,7 @@ describe('OrganizationContextMiddleware', () => {
         new Date('2023-01-02'),
       );
 
-      const integrationMockOrganizationDb = {
+      const integrationMockOrganizationDb: any = {
         selectFrom: jest.fn(),
         insertInto: jest.fn(),
         updateTable: jest.fn(),
@@ -450,7 +454,7 @@ describe('OrganizationContextMiddleware', () => {
 
       mockRequest.headers = { 'x-organization-id': 'integration-org' };
       mockRepository.findById.mockResolvedValue(organization);
-      mockSchemaManager.getDbForSchema.mockResolvedValue(
+      mockSchemaManager.getDbForSchema.mockReturnValue(
         integrationMockOrganizationDb,
       );
 

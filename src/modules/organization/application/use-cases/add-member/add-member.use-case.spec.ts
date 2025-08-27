@@ -7,7 +7,7 @@ import {
   Organization,
   OrganizationStatus,
 } from '../../../domain/entities/organization.entity';
-import { AddMemberDto } from '../../dtos/add-member.dto';
+import { AddMemberDto, OrganizationRole } from '../../dtos/add-member.dto';
 import { OrganizationNotFoundError } from '../../../domain/errors/organization-not-found.error';
 
 describe('AddMemberUseCase', () => {
@@ -58,7 +58,7 @@ describe('AddMemberUseCase', () => {
     const organizationId = 'test-org-123';
     const addMemberDto: AddMemberDto = {
       userId: 'user-456',
-      role: 'member',
+      role: OrganizationRole.MEMBER,
     };
 
     const activeOrganization = Organization.reconstitute(
@@ -72,10 +72,12 @@ describe('AddMemberUseCase', () => {
     );
 
     beforeEach(() => {
-      mockLogtoClient.organizations.addUsers.mockResolvedValue(undefined);
-      mockLogtoClient.organizations.assignUserRoles.mockResolvedValue(
+      (mockLogtoClient.organizations.addUsers as jest.Mock).mockResolvedValue(
         undefined,
       );
+      (
+        mockLogtoClient.organizations.assignUserRoles as jest.Mock
+      ).mockResolvedValue(undefined);
     });
 
     it('should add member with role successfully', async () => {
@@ -90,7 +92,9 @@ describe('AddMemberUseCase', () => {
       );
       expect(
         mockLogtoClient.organizations.assignUserRoles,
-      ).toHaveBeenCalledWith(organizationId, 'user-456', ['member']);
+      ).toHaveBeenCalledWith(organizationId, 'user-456', [
+        OrganizationRole.MEMBER,
+      ]);
     });
 
     it('should add member without role successfully', async () => {
@@ -161,7 +165,9 @@ describe('AddMemberUseCase', () => {
     it('should throw BadRequestException when adding user fails', async () => {
       const logtoError = new Error('User not found');
       mockRepository.findById.mockResolvedValue(activeOrganization);
-      mockLogtoClient.organizations.addUsers.mockRejectedValue(logtoError);
+      (mockLogtoClient.organizations.addUsers as jest.Mock).mockRejectedValue(
+        logtoError,
+      );
 
       await expect(
         useCase.execute(organizationId, addMemberDto),
@@ -182,10 +188,12 @@ describe('AddMemberUseCase', () => {
     it('should throw BadRequestException when assigning role fails', async () => {
       const roleError = new Error('Invalid role');
       mockRepository.findById.mockResolvedValue(activeOrganization);
-      mockLogtoClient.organizations.addUsers.mockResolvedValue(undefined);
-      mockLogtoClient.organizations.assignUserRoles.mockRejectedValue(
-        roleError,
+      (mockLogtoClient.organizations.addUsers as jest.Mock).mockResolvedValue(
+        undefined,
       );
+      (
+        mockLogtoClient.organizations.assignUserRoles as jest.Mock
+      ).mockRejectedValue(roleError);
 
       await expect(
         useCase.execute(organizationId, addMemberDto),
@@ -199,12 +207,16 @@ describe('AddMemberUseCase', () => {
       );
       expect(
         mockLogtoClient.organizations.assignUserRoles,
-      ).toHaveBeenCalledWith(organizationId, 'user-456', ['member']);
+      ).toHaveBeenCalledWith(organizationId, 'user-456', [
+        OrganizationRole.MEMBER,
+      ]);
     });
 
     it('should handle non-Error exceptions from Logto client', async () => {
       mockRepository.findById.mockResolvedValue(activeOrganization);
-      mockLogtoClient.organizations.addUsers.mockRejectedValue('String error');
+      (mockLogtoClient.organizations.addUsers as jest.Mock).mockRejectedValue(
+        'String error',
+      );
 
       await expect(useCase.execute(organizationId, addMemberDto)).rejects.toBe(
         'String error',
@@ -226,7 +238,11 @@ describe('AddMemberUseCase', () => {
     });
 
     it('should work with different role types', async () => {
-      const roles = ['owner', 'admin', 'member', 'viewer', 'custom-role'];
+      const roles = [
+        OrganizationRole.OWNER,
+        OrganizationRole.ADMIN,
+        OrganizationRole.MEMBER,
+      ];
 
       mockRepository.findById.mockResolvedValue(activeOrganization);
 
@@ -257,7 +273,7 @@ describe('AddMemberUseCase', () => {
       for (const userId of userIds) {
         const dto: AddMemberDto = {
           userId,
-          role: 'member',
+          role: OrganizationRole.MEMBER,
         };
 
         await useCase.execute(organizationId, dto);
@@ -268,7 +284,9 @@ describe('AddMemberUseCase', () => {
         );
         expect(
           mockLogtoClient.organizations.assignUserRoles,
-        ).toHaveBeenCalledWith(organizationId, userId, ['member']);
+        ).toHaveBeenCalledWith(organizationId, userId, [
+          OrganizationRole.MEMBER,
+        ]);
       }
     });
 
@@ -294,7 +312,7 @@ describe('AddMemberUseCase', () => {
     it('should not assign role when role is empty string', async () => {
       const dtoWithEmptyRole: AddMemberDto = {
         userId: 'user-456',
-        role: '',
+        role: undefined,
       };
 
       mockRepository.findById.mockResolvedValue(activeOrganization);
@@ -315,7 +333,7 @@ describe('AddMemberUseCase', () => {
     const organizationId = 'test-org-123';
     const addMemberDto: AddMemberDto = {
       userId: 'user-456',
-      role: 'member',
+      role: OrganizationRole.MEMBER,
     };
 
     it('should handle concurrent modification scenarios', async () => {
@@ -329,12 +347,14 @@ describe('AddMemberUseCase', () => {
       );
 
       mockRepository.findById.mockResolvedValue(activeOrganization);
-      mockLogtoClient.organizations.addUsers.mockResolvedValue(undefined);
+      (mockLogtoClient.organizations.addUsers as jest.Mock).mockResolvedValue(
+        undefined,
+      );
 
       const concurrentError = new Error('Concurrent modification detected');
-      mockLogtoClient.organizations.assignUserRoles.mockRejectedValue(
-        concurrentError,
-      );
+      (
+        mockLogtoClient.organizations.assignUserRoles as jest.Mock
+      ).mockRejectedValue(concurrentError);
 
       await expect(
         useCase.execute(organizationId, addMemberDto),
@@ -358,7 +378,9 @@ describe('AddMemberUseCase', () => {
       mockRepository.findById.mockResolvedValue(activeOrganization);
 
       const timeoutError = new Error('Request timeout');
-      mockLogtoClient.organizations.addUsers.mockRejectedValue(timeoutError);
+      (mockLogtoClient.organizations.addUsers as jest.Mock).mockRejectedValue(
+        timeoutError,
+      );
 
       await expect(
         useCase.execute(organizationId, addMemberDto),

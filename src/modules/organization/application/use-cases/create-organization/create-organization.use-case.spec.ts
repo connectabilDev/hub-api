@@ -78,7 +78,9 @@ describe('CreateOrganizationUseCase', () => {
     };
 
     beforeEach(() => {
-      mockLogtoClient.organizations.create.mockResolvedValue(mockLogtoOrg);
+      (mockLogtoClient.organizations.create as jest.Mock).mockResolvedValue(
+        mockLogtoOrg,
+      );
       mockRepository.existsById.mockResolvedValue(false);
       mockRepository.save.mockImplementation(async (org) => {
         await Promise.resolve();
@@ -89,10 +91,12 @@ describe('CreateOrganizationUseCase', () => {
         return org;
       });
       mockSchemaManager.provisionSchema.mockResolvedValue(undefined);
-      mockLogtoClient.organizations.addUsers.mockResolvedValue(undefined);
-      mockLogtoClient.organizations.assignUserRoles.mockResolvedValue(
+      (mockLogtoClient.organizations.addUsers as jest.Mock).mockResolvedValue(
         undefined,
       );
+      (
+        mockLogtoClient.organizations.assignUserRoles as jest.Mock
+      ).mockResolvedValue(undefined);
     });
 
     it('should create organization successfully with owner', async () => {
@@ -193,7 +197,9 @@ describe('CreateOrganizationUseCase', () => {
 
     it('should rollback if adding user fails', async () => {
       const userError = new Error('Failed to add user');
-      mockLogtoClient.organizations.addUsers.mockRejectedValue(userError);
+      (mockLogtoClient.organizations.addUsers as jest.Mock).mockRejectedValue(
+        userError,
+      );
 
       await expect(useCase.execute(createDto)).rejects.toThrow(userError);
 
@@ -208,9 +214,9 @@ describe('CreateOrganizationUseCase', () => {
 
     it('should rollback if assigning roles fails', async () => {
       const roleError = new Error('Failed to assign roles');
-      mockLogtoClient.organizations.assignUserRoles.mockRejectedValue(
-        roleError,
-      );
+      (
+        mockLogtoClient.organizations.assignUserRoles as jest.Mock
+      ).mockRejectedValue(roleError);
 
       await expect(useCase.execute(createDto)).rejects.toThrow(roleError);
 
@@ -225,7 +231,9 @@ describe('CreateOrganizationUseCase', () => {
 
     it('should handle logto organization creation failure', async () => {
       const logtoError = new Error('Logto API error');
-      mockLogtoClient.organizations.create.mockRejectedValue(logtoError);
+      (mockLogtoClient.organizations.create as jest.Mock).mockRejectedValue(
+        logtoError,
+      );
 
       await expect(useCase.execute(createDto)).rejects.toThrow(logtoError);
 
@@ -288,7 +296,9 @@ describe('CreateOrganizationUseCase', () => {
     };
 
     beforeEach(() => {
-      mockLogtoClient.organizations.create.mockResolvedValue(mockLogtoOrg);
+      (mockLogtoClient.organizations.create as jest.Mock).mockResolvedValue(
+        mockLogtoOrg,
+      );
       mockRepository.existsById.mockResolvedValue(false);
       mockRepository.save.mockImplementation(async (org) => {
         await Promise.resolve();
@@ -301,7 +311,9 @@ describe('CreateOrganizationUseCase', () => {
       mockSchemaManager.provisionSchema.mockRejectedValue(provisioningError);
 
       const deleteError = new Error('Delete failed');
-      mockLogtoClient.organizations.delete.mockRejectedValue(deleteError);
+      (mockLogtoClient.organizations.delete as jest.Mock).mockRejectedValue(
+        deleteError,
+      );
 
       await expect(useCase.execute(createDto)).rejects.toThrow(
         provisioningError,
@@ -315,10 +327,12 @@ describe('CreateOrganizationUseCase', () => {
 
     it('should handle complex rollback scenario with multiple failures', async () => {
       const roleError = new Error('Role assignment failed');
-      mockLogtoClient.organizations.addUsers.mockResolvedValue(undefined);
-      mockLogtoClient.organizations.assignUserRoles.mockRejectedValue(
-        roleError,
+      (mockLogtoClient.organizations.addUsers as jest.Mock).mockResolvedValue(
+        undefined,
       );
+      (
+        mockLogtoClient.organizations.assignUserRoles as jest.Mock
+      ).mockRejectedValue(roleError);
 
       mockSchemaManager.provisionSchema.mockResolvedValue(undefined);
 
