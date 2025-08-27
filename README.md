@@ -10,6 +10,7 @@ API backend for Connectabil Hub - Professional accounting platform with multi-te
 - **Authentication**: Logto
 - **Queue**: BullMQ with Redis
 - **Architecture**: Clean Architecture with Domain-Driven Design
+- **Internationalization**: nestjs-i18n with multi-language support
 
 ## 🏗️ Architecture
 
@@ -35,6 +36,7 @@ src/
 - **Community Features**: Posts, likes, comments with real-time notifications
 - **User Profiles**: Comprehensive profiles with onboarding workflow
 - **Webhook Integration**: Automatic user and organization provisioning
+- **Internationalization (i18n)**: Support for multiple languages (en, pt-BR, es)
 
 ## 🛠️ Setup
 
@@ -114,6 +116,58 @@ Social features including:
 - Likes and comments
 - Real-time notifications via BullMQ
 - Feed with caching support
+
+## 🌍 Internationalization (i18n)
+
+The API supports multiple languages for global accessibility:
+
+### Supported Languages
+
+- **English (en)** - Default language
+- **Portuguese Brazil (pt-BR)** - Brazilian Portuguese
+- **Spanish (es)** - Spanish
+
+### Language Selection
+
+The API determines the language in the following priority order:
+
+1. **Query Parameter**: `?lang=pt-BR` or `?locale=es` or `?l=en`
+2. **HTTP Header**: `x-lang: pt-BR` or `x-locale: es`
+3. **Accept-Language Header**: Standard browser language preference
+4. **Default**: Falls back to English if no preference is specified
+
+### Translation Modules
+
+Translations are organized by feature modules:
+
+- `common` - General messages and UI text
+- `auth` - Authentication and authorization messages
+- `validation` - Field validation error messages
+- `organization` - Organization management messages
+- `user-profile` - User profile and onboarding messages
+
+### Testing i18n
+
+Test endpoints are available for validating translations:
+
+- `GET /i18n-test/hello` - Simple hello message
+- `GET /i18n-test/welcome` - Welcome message
+- `GET /i18n-test/validation-error` - Validation error example
+- `GET /i18n-test/auth-error` - Authentication error example
+- `GET /i18n-test/all-messages` - All available translations
+
+Example:
+
+```bash
+# Request with Portuguese language
+curl http://localhost:3000/i18n-test/hello?lang=pt-BR
+
+# Response
+{
+  "message": "Olá",
+  "language": "pt-BR"
+}
+```
 
 ## 🤝 Contributing
 
