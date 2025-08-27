@@ -112,7 +112,6 @@ const getCustomJwtClaims = async ({ token, context, environmentVariables }) => {
 
   // Adicionar claims customizados
   return {
-    workspace_id: user.custom_data?.workspace_id,
     tenant_id: user.custom_data?.tenant_id,
     permissions: user.roles?.map(r => r.name) || []
   };

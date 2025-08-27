@@ -10,7 +10,6 @@ O sistema de controle de acesso do Hub é baseado em **scopes** que determinam q
 - **Jobs** - Vagas de emprego
 - **Mentoring** - Mentoria profissional
 - **Education** - Cursos e educação
-- **Workspace** - Gestão de workspace
 
 ## Mapeamento de Roles para Scopes
 
@@ -25,7 +24,6 @@ O sistema de controle de acesso do Hub é baseado em **scopes** que determinam q
 ✅ jobs:admin
 ✅ education:admin
 ✅ community:admin
-✅ workspace:admin
 ```
 
 ### 👤 Candidate (Candidato)
@@ -81,10 +79,6 @@ O sistema de controle de acesso do Hub é baseado em **scopes** que determinam q
 - ✅ `community:manage` - Gerenciar próprios posts
 
 #### Workspace
-
-- ✅ `workspace:create` - Criar workspace
-- ✅ `workspace:manage` - Gerenciar workspace
-- ✅ `workspace:invite` - Convidar membros
 
 ### 🎯 Mentor
 
@@ -206,14 +200,8 @@ O sistema de controle de acesso do Hub é baseado em **scopes** que determinam q
 
 ### Workspace
 
-| Scope                | Descrição               | Roles que possuem           |
-| -------------------- | ----------------------- | --------------------------- |
-| `workspace:view`     | Visualizar workspace    | Todos com workspace         |
-| `workspace:create`   | Criar workspace         | Employer, Mentor, Professor |
-| `workspace:manage`   | Gerenciar configurações | Employer, Mentor, Professor |
-| `workspace:invite`   | Convidar membros        | Employer                    |
-| `workspace:moderate` | Moderar conteúdo        | Admin                       |
-| `workspace:admin`    | Administração total     | Admin                       |
+| Scope | Descrição | Roles que possuem |
+| ----- | --------- | ----------------- |
 
 ## Como Usar no Backend
 

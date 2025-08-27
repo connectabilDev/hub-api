@@ -125,7 +125,6 @@ describe('ModuleActionGuard', () => {
           scope: 'mentoring:schedule',
         },
         { module: 'education', action: 'teach', scope: 'education:teach' },
-        { module: 'workspace', action: 'invite', scope: 'workspace:invite' },
       ];
 
       testCases.forEach(({ module, action, scope }) => {

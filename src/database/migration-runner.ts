@@ -5,8 +5,7 @@ import { MigratorService } from '../modules/shared/infrastructure/database/migra
 import { DatabaseConfigService } from '../modules/shared/infrastructure/database/database.config';
 import { CreateUsersTableMigration } from '../modules/shared/infrastructure/database/migrations/001-create-users-table.migration';
 import { CreateProductsTableMigration } from '../modules/shared/infrastructure/database/migrations/002-create-products-table.migration';
-import { CreateWorkspacesTableMigration } from '../modules/shared/infrastructure/database/migrations/003-create-workspaces-table.migration';
-import { CreateWorkspaceMembersTableMigration } from '../modules/shared/infrastructure/database/migrations/004-create-workspace-members-table.migration';
+import { CreateCommunityTablesMigration } from '../modules/shared/infrastructure/database/migrations/005-create-community-tables.migration';
 
 export class MigrationRunner {
   private readonly logger = new Logger(MigrationRunner.name);
@@ -41,12 +40,8 @@ export class MigrationRunner {
           migration: CreateProductsTableMigration,
         },
         {
-          name: '003-create-workspaces-table',
-          migration: CreateWorkspacesTableMigration,
-        },
-        {
-          name: '004-create-workspace-members-table',
-          migration: CreateWorkspaceMembersTableMigration,
+          name: '005-create-community-tables',
+          migration: CreateCommunityTablesMigration,
         },
       ];
 

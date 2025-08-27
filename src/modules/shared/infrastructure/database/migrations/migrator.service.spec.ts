@@ -58,6 +58,11 @@ describe('MigratorService', () => {
   beforeEach(async () => {
     mockKysely = {
       destroy: jest.fn(),
+      selectFrom: jest.fn(() => ({
+        selectAll: jest.fn(() => ({
+          execute: jest.fn().mockResolvedValue([]),
+        })),
+      })),
     } as any;
 
     mockMigrator = {

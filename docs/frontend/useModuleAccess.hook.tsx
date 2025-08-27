@@ -1,7 +1,7 @@
 import { useLogto } from '@logto/react';
 import { useMemo } from 'react';
 
-export type HubModule = 'community' | 'jobs' | 'mentoring' | 'education' | 'workspace';
+export type HubModule = 'community' | 'jobs' | 'mentoring' | 'education';
 export type ModuleAction = 'view' | 'create' | 'post' | 'manage' | 'moderate' | 'admin' | 'apply' | 'schedule' | 'teach' | 'enroll' | 'review' | 'grade' | 'invite';
 
 interface ModulePermissions {
@@ -62,7 +62,7 @@ export const useModuleAccess = (): UseModuleAccessReturn => {
   };
 
   const getUserModules = (): HubModule[] => {
-    const modules: HubModule[] = ['community', 'jobs', 'mentoring', 'education', 'workspace'];
+    const modules: HubModule[] = ['community', 'jobs', 'mentoring', 'education'];
     return modules.filter(module => hasModuleAccess(module));
   };
 
@@ -133,9 +133,6 @@ const ModuleNavigation: React.FC = () => {
       )}
       {availableModules.includes('education') && (
         <a href="/education">Education</a>
-      )}
-      {availableModules.includes('workspace') && (
-        <a href="/workspace">Workspace</a>
       )}
     </nav>
   );

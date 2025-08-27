@@ -304,7 +304,6 @@ REACT_APP_LOGTO_POST_LOGOUT_REDIRECT_URI=http://localhost
 # comunidade:post - Create posts
 # comunidade:moderate - Moderate community
 # admin:users - Manage users
-# admin:workspaces - Manage workspaces
 `;
 
     const envPath = path.join(process.cwd(), '.env.web');

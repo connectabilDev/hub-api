@@ -6,7 +6,6 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './health/health.module';
 import { WebhooksModule } from './modules/webhooks/webhooks.module';
-import { WorkspacesModule } from './modules/workspaces/workspaces.module';
 import { CommunityModule } from './modules/community/community.module';
 
 @Module({
@@ -16,7 +15,6 @@ import { CommunityModule } from './modules/community/community.module';
     AuthModule,
     HealthModule,
     WebhooksModule,
-    WorkspacesModule,
     CommunityModule,
   ],
   controllers: [AppController],

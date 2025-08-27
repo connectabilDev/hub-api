@@ -6,6 +6,7 @@ import { MigratorService } from '../modules/shared/infrastructure/database/migra
 import { DatabaseConfigService } from '../modules/shared/infrastructure/database/database.config';
 import { CreateUsersTableMigration } from '../modules/shared/infrastructure/database/migrations/001-create-users-table.migration';
 import { CreateProductsTableMigration } from '../modules/shared/infrastructure/database/migrations/002-create-products-table.migration';
+import { CreateCommunityTablesMigration } from '../modules/shared/infrastructure/database/migrations/005-create-community-tables.migration';
 
 async function runMigrations() {
   console.log('Starting migrations...');
@@ -19,6 +20,10 @@ async function runMigrations() {
       {
         name: '002-create-products-table',
         migration: CreateProductsTableMigration,
+      },
+      {
+        name: '005-create-community-tables',
+        migration: CreateCommunityTablesMigration,
       },
     ];
 

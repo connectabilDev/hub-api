@@ -7,12 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { MODULE_KEY } from '../decorators/module.decorator';
 
-export type HubModule =
-  | 'community'
-  | 'jobs'
-  | 'mentoring'
-  | 'education'
-  | 'workspace';
+export type HubModule = 'community' | 'jobs' | 'mentoring' | 'education';
 
 @Injectable()
 export class ModuleAccessGuard implements CanActivate {

@@ -82,34 +82,34 @@ export const createApiResourceConfigs = (
       },
       { name: 'community:admin', description: 'Full community administration' },
 
-      // Workspace management scopes
+      // Organization management scopes (multi-tenant)
       {
-        name: 'workspace:create',
-        description: 'Create new workspaces',
+        name: 'organization:read',
+        description: 'Read organization information',
       },
       {
-        name: 'workspace:manage',
-        description: 'Manage workspace settings and configuration',
+        name: 'organization:write',
+        description: 'Create and update organizations',
       },
       {
-        name: 'workspace:invite',
-        description: 'Invite team members to workspace',
+        name: 'organization:delete',
+        description: 'Delete organizations',
       },
       {
-        name: 'workspace:moderate',
-        description: 'Moderate workspace content and discussions',
+        name: 'members:read',
+        description: 'View organization members',
       },
       {
-        name: 'workspace:assist',
-        description: 'Assist in workspace management and support',
+        name: 'members:write',
+        description: 'Manage organization members',
       },
       {
-        name: 'workspace:view',
-        description: 'View workspace information',
+        name: 'settings:read',
+        description: 'View organization settings',
       },
       {
-        name: 'workspace:admin',
-        description: 'Full workspace administration',
+        name: 'settings:write',
+        description: 'Update organization settings',
       },
     ],
   },

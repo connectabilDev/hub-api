@@ -104,7 +104,7 @@ describe('ModuleAccessGuard', () => {
     });
 
     it('should work with different modules', () => {
-      const modules = ['jobs', 'mentoring', 'education', 'workspace'];
+      const modules = ['jobs', 'mentoring', 'education'];
 
       modules.forEach((module) => {
         jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(module);

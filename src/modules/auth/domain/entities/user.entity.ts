@@ -125,43 +125,4 @@ export class User {
     const currentTimestamp = Math.floor(Date.now() / 1000);
     return this.exp < currentTimestamp;
   }
-
-  getWorkspaceRole(workspaceId: string): string | undefined {
-    return this.getOrganizationRole(workspaceId);
-  }
-
-  isWorkspaceOwner(workspaceId: string): boolean {
-    return this.getWorkspaceRole(workspaceId) === 'owner';
-  }
-
-  canManageWorkspace(workspaceId: string): boolean {
-    const role = this.getWorkspaceRole(workspaceId);
-    return (
-      role === 'owner' ||
-      role === 'assistant' ||
-      role === 'co_professor' ||
-      role === 'co_mentor'
-    );
-  }
-
-  canModerateWorkspace(workspaceId: string): boolean {
-    const role = this.getWorkspaceRole(workspaceId);
-    return role === 'owner' || role === 'moderator';
-  }
-
-  canInviteToWorkspace(workspaceId: string): boolean {
-    return this.isWorkspaceOwner(workspaceId);
-  }
-
-  getWorkspaces(): string[] {
-    return this.organizations;
-  }
-
-  hasWorkspaceScope(scope: string): boolean {
-    return this.scopes.includes(scope);
-  }
-
-  canCreateWorkspace(): boolean {
-    return this.hasScope('workspace:create');
-  }
 }

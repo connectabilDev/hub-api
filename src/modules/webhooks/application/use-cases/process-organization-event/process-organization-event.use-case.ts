@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OrganizationWebhookDto } from '../../dtos/organization-webhook.dto';
-import { WorkspaceType } from '../../../../workspaces/domain/entities/workspace.entity';
 
 @Injectable()
 export class ProcessOrganizationEventUseCase {
@@ -43,14 +42,8 @@ export class ProcessOrganizationEventUseCase {
       return;
     }
 
-    const workspaceType = this.determineWorkspaceType(name);
-    if (!workspaceType) {
-      this.logger.warn(`Could not determine workspace type for: ${name}`);
-      return;
-    }
-
     this.logger.log(
-      `Creating workspace of type ${workspaceType} for organization ${organizationId}`,
+      `Organization ${organizationId} created with name: ${name}`,
     );
   }
 
@@ -76,25 +69,5 @@ export class ProcessOrganizationEventUseCase {
     this.logger.log(
       `Member updated in organization ${organizationId}: User ${userId} now has role ${role}`,
     );
-  }
-
-  private determineWorkspaceType(
-    organizationName: string,
-  ): WorkspaceType | null {
-    const nameLower = organizationName.toLowerCase();
-
-    if (nameLower.includes('teaching') || nameLower.includes('professor')) {
-      return WorkspaceType.PROFESSOR;
-    }
-
-    if (nameLower.includes('mentoring') || nameLower.includes('mentor')) {
-      return WorkspaceType.MENTOR;
-    }
-
-    if (nameLower.includes('hiring') || nameLower.includes('employer')) {
-      return WorkspaceType.EMPLOYER;
-    }
-
-    return null;
   }
 }

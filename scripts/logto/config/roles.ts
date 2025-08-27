@@ -93,12 +93,6 @@ export const ROLE_SCOPE_MAPPINGS = {
     'community:view',
     'community:post',
     'community:manage',
-
-    // Workspace - can create and manage workspace
-    'workspace:create',
-    'workspace:manage',
-    'workspace:invite',
-    'workspace:view',
   ],
 
   Mentor: [
@@ -121,12 +115,6 @@ export const ROLE_SCOPE_MAPPINGS = {
     'community:view',
     'community:post',
     'community:manage',
-
-    // Workspace - can create and manage workspace
-    'workspace:create',
-    'workspace:manage',
-    'workspace:invite',
-    'workspace:view',
   ],
 
   Professor: [
@@ -153,12 +141,6 @@ export const ROLE_SCOPE_MAPPINGS = {
     'community:view',
     'community:post',
     'community:manage',
-
-    // Workspace - can create and manage workspace
-    'workspace:create',
-    'workspace:manage',
-    'workspace:invite',
-    'workspace:view',
   ],
 
   User: [
