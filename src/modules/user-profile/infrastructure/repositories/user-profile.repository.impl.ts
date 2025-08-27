@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { Kysely } from 'kysely';
 import { UserProfile } from '../../domain/entities/user-profile.entity';
 import {
@@ -9,13 +9,14 @@ import {
 } from '../../../shared/infrastructure/database/database.types';
 import type { UserProfileRepository } from '../../domain/repositories/user-profile.repository.interface';
 import { BaseRepository } from '../../../shared/infrastructure/database/base.repository';
+import { DATABASE_CONNECTION } from '../../../shared/infrastructure/database/database.module';
 
 @Injectable()
 export class UserProfileRepositoryImpl
   extends BaseRepository
   implements UserProfileRepository
 {
-  constructor(db: Kysely<Database>) {
+  constructor(@Inject(DATABASE_CONNECTION) db: Kysely<Database>) {
     super(db);
   }
 
