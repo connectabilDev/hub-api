@@ -29,5 +29,16 @@
   "ADDRESS_STATE_REQUIRED": "Estado é obrigatório",
   "ADDRESS_ZIP_CODE_REQUIRED": "CEP é obrigatório",
   "ONBOARDING_COMPLETED": "Onboarding concluído com sucesso",
-  "ONBOARDING_ALREADY_COMPLETED": "Onboarding já foi concluído"
+  "ONBOARDING_ALREADY_COMPLETED": "Onboarding já foi concluído",
+  "NATIONALITY_REQUIRED": "Nacionalidade é obrigatória",
+  "UNSUPPORTED_COUNTRY": "País não suportado",
+  "INVALID_INTERNATIONAL_PHONE": "Número de telefone internacional inválido",
+  "PASSPORT_REQUIRED": "Passaporte é obrigatório para não-brasileiros",
+  "PASSPORT_EXPIRED": "Passaporte expirado",
+  "INVALID_SSN": "Número de Seguro Social inválido",
+  "INVALID_NI_NUMBER": "Número de Seguro Nacional inválido",
+  "INVALID_NATIONAL_ID": "Documento de identidade nacional inválido",
+  "IDENTITY_DOCUMENT_REQUIRED": "Pelo menos um documento de identidade é obrigatório",
+  "INVALID_POSTAL_CODE": "Código postal inválido para o país selecionado",
+  "STATE_PROVINCE_REQUIRED": "Estado/Província é obrigatório para este país"
 }

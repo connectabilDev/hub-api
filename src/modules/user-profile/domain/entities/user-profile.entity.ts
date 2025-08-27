@@ -3,6 +3,14 @@ import { RG } from '../value-objects/rg.vo';
 import { Phone } from '../value-objects/phone.vo';
 import { BirthDate } from '../value-objects/birth-date.vo';
 import { Address } from '../value-objects/address.vo';
+import { Nationality, CountryCode } from '../value-objects/nationality.vo';
+import { InternationalPhone } from '../value-objects/international-phone.vo';
+import { InternationalAddress } from '../value-objects/international-address.vo';
+import {
+  IdentityDocument,
+  IdentityDocumentData,
+  IdentityDocumentFactory,
+} from '../value-objects/identity-document.vo';
 
 export enum Gender {
   MALE = 'male',
@@ -38,6 +46,12 @@ export interface UserProfileData {
   bio?: string;
   headline?: string;
   address?: Address;
+  nationality?: Nationality;
+  countryCode?: CountryCode;
+  identityDocuments?: IdentityDocument[];
+  internationalPhone?: InternationalPhone;
+  internationalAddress?: InternationalAddress;
+  localePreferences?: Record<string, any>;
   crcNumber?: string;
   specializations?: string[];
   yearsExperience?: number;
@@ -85,7 +99,7 @@ export class UserProfile {
   }
 
   static reconstitute(data: UserProfileData): UserProfile {
-    return new UserProfile({
+    const reconstitutedData: UserProfileData = {
       ...data,
       cpf: data.cpf ? new CPF(data.cpf.toString()) : undefined,
       rg: data.rg ? new RG(data.rg.toString()) : undefined,
@@ -105,7 +119,49 @@ export class UserProfile {
               : JSON.parse(data.address as any),
           )
         : undefined,
-    });
+    };
+
+    if (data.nationality) {
+      reconstitutedData.nationality = new Nationality(
+        data.nationality.toString(),
+      );
+    }
+
+    if (data.internationalPhone) {
+      const phoneData =
+        typeof data.internationalPhone === 'object'
+          ? (data.internationalPhone as any)
+          : JSON.parse(data.internationalPhone as string);
+      reconstitutedData.internationalPhone = new InternationalPhone(
+        phoneData.value || phoneData,
+        phoneData.countryCode || (data.countryCode as any),
+      );
+    }
+
+    if (data.internationalAddress) {
+      const addressData =
+        typeof data.internationalAddress === 'object'
+          ? (data.internationalAddress as any)
+          : JSON.parse(data.internationalAddress as string);
+      reconstitutedData.internationalAddress = new InternationalAddress(
+        addressData,
+      );
+    }
+
+    if (data.identityDocuments) {
+      const docsData =
+        typeof data.identityDocuments === 'object'
+          ? data.identityDocuments
+          : JSON.parse(data.identityDocuments as string);
+
+      reconstitutedData.identityDocuments = Array.isArray(docsData)
+        ? docsData.map((doc: IdentityDocumentData) =>
+            IdentityDocumentFactory.create(doc),
+          )
+        : [];
+    }
+
+    return new UserProfile(reconstitutedData);
   }
 
   updatePersonalInfo(data: {
@@ -212,10 +268,24 @@ export class UserProfile {
     const missing: string[] = [];
 
     if (!this.data.fullName) missing.push('fullName');
-    if (!this.data.cpf) missing.push('cpf');
-    if (!this.data.rg) missing.push('rg');
     if (!this.data.birthDate) missing.push('birthDate');
-    if (!this.data.phone) missing.push('phone');
+
+    const isBrazilian = this.data.nationality?.isBrazilian() ?? true;
+
+    if (isBrazilian) {
+      if (!this.data.cpf) missing.push('cpf');
+      if (!this.data.rg) missing.push('rg');
+      if (!this.data.phone) missing.push('phone');
+    } else {
+      if (!this.data.internationalPhone) missing.push('internationalPhone');
+      if (
+        !this.data.identityDocuments ||
+        this.data.identityDocuments.length === 0
+      ) {
+        missing.push('identityDocuments');
+      }
+      if (!this.data.internationalAddress) missing.push('internationalAddress');
+    }
 
     return missing;
   }
@@ -294,5 +364,81 @@ export class UserProfile {
 
   getUpdatedAt(): Date | undefined {
     return this.data.updatedAt;
+  }
+
+  getNationality(): Nationality | undefined {
+    return this.data.nationality;
+  }
+
+  getCountryCode(): CountryCode | undefined {
+    return this.data.countryCode;
+  }
+
+  getIdentityDocuments(): IdentityDocument[] | undefined {
+    return this.data.identityDocuments;
+  }
+
+  getInternationalPhone(): InternationalPhone | undefined {
+    return this.data.internationalPhone;
+  }
+
+  getInternationalAddress(): InternationalAddress | undefined {
+    return this.data.internationalAddress;
+  }
+
+  getLocalePreferences(): Record<string, any> | undefined {
+    return this.data.localePreferences;
+  }
+
+  updateNationality(nationality: Nationality): void {
+    this.data.nationality = nationality;
+    this.data.countryCode = nationality.getCode();
+    this.data.updatedAt = new Date();
+  }
+
+  updateInternationalPhone(phone: InternationalPhone): void {
+    this.data.internationalPhone = phone;
+    this.data.updatedAt = new Date();
+  }
+
+  updateInternationalAddress(address: InternationalAddress): void {
+    this.data.internationalAddress = address;
+    this.data.updatedAt = new Date();
+  }
+
+  addIdentityDocument(document: IdentityDocument): void {
+    if (!this.data.identityDocuments) {
+      this.data.identityDocuments = [];
+    }
+
+    const existingIndex = this.data.identityDocuments.findIndex(
+      (doc) => doc.getType().toString() === document.getType().toString(),
+    );
+
+    if (existingIndex >= 0) {
+      this.data.identityDocuments[existingIndex] = document;
+    } else {
+      this.data.identityDocuments.push(document);
+    }
+
+    this.data.updatedAt = new Date();
+  }
+
+  removeIdentityDocument(documentType: string): void {
+    if (!this.data.identityDocuments) return;
+
+    this.data.identityDocuments = this.data.identityDocuments.filter(
+      (doc) => doc.getType().toString() !== documentType,
+    );
+
+    this.data.updatedAt = new Date();
+  }
+
+  updateLocalePreferences(preferences: Record<string, any>): void {
+    this.data.localePreferences = {
+      ...this.data.localePreferences,
+      ...preferences,
+    };
+    this.data.updatedAt = new Date();
   }
 }

@@ -29,5 +29,16 @@
   "ADDRESS_STATE_REQUIRED": "El estado es obligatorio",
   "ADDRESS_ZIP_CODE_REQUIRED": "El código postal es obligatorio",
   "ONBOARDING_COMPLETED": "Incorporación completada con éxito",
-  "ONBOARDING_ALREADY_COMPLETED": "La incorporación ya fue completada"
+  "ONBOARDING_ALREADY_COMPLETED": "La incorporación ya fue completada",
+  "NATIONALITY_REQUIRED": "La nacionalidad es requerida",
+  "UNSUPPORTED_COUNTRY": "País no soportado",
+  "INVALID_INTERNATIONAL_PHONE": "Número de teléfono internacional inválido",
+  "PASSPORT_REQUIRED": "Pasaporte requerido para no brasileños",
+  "PASSPORT_EXPIRED": "Pasaporte expirado",
+  "INVALID_SSN": "Número de Seguro Social inválido",
+  "INVALID_NI_NUMBER": "Número de Seguro Nacional inválido",
+  "INVALID_NATIONAL_ID": "Documento de identidad nacional inválido",
+  "IDENTITY_DOCUMENT_REQUIRED": "Se requiere al menos un documento de identidad",
+  "INVALID_POSTAL_CODE": "Código postal inválido para el país seleccionado",
+  "STATE_PROVINCE_REQUIRED": "Estado/Provincia es requerido para este país"
 }

@@ -185,6 +185,12 @@ export interface UserProfileTable {
   crc_number?: string;
   specializations?: string[];
   years_experience?: number;
+  nationality?: string;
+  country_code?: string;
+  identity_documents?: any;
+  international_phone?: string;
+  international_address?: any;
+  locale_preferences?: any;
   profile_completed: Generated<boolean>;
   onboarding_step: Generated<string>;
   verification_status: Generated<string>;

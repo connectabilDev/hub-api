@@ -29,5 +29,16 @@
   "ADDRESS_STATE_REQUIRED": "State is required",
   "ADDRESS_ZIP_CODE_REQUIRED": "Zip code is required",
   "ONBOARDING_COMPLETED": "Onboarding completed successfully",
-  "ONBOARDING_ALREADY_COMPLETED": "Onboarding already completed"
+  "ONBOARDING_ALREADY_COMPLETED": "Onboarding already completed",
+  "NATIONALITY_REQUIRED": "Nationality is required",
+  "UNSUPPORTED_COUNTRY": "Country not supported",
+  "INVALID_INTERNATIONAL_PHONE": "Invalid international phone number",
+  "PASSPORT_REQUIRED": "Passport is required for non-Brazilian nationals",
+  "PASSPORT_EXPIRED": "Passport has expired",
+  "INVALID_SSN": "Invalid Social Security Number",
+  "INVALID_NI_NUMBER": "Invalid National Insurance number",
+  "INVALID_NATIONAL_ID": "Invalid national ID",
+  "IDENTITY_DOCUMENT_REQUIRED": "At least one identity document is required",
+  "INVALID_POSTAL_CODE": "Invalid postal code for the selected country",
+  "STATE_PROVINCE_REQUIRED": "State/Province is required for this country"
 }
